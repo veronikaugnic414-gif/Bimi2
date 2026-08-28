@@ -15,7 +15,6 @@ function getDaysPlural(n) {
 
 export async function renderDashboard(container, currentUser) {
   try {
-    // ⚡ 1 швидкий запит до бекенду
     const summaryData = await api.getDashboardSummary(currentUser?.id || 1);
 
     const events = summaryData.events || [];
@@ -27,12 +26,10 @@ export async function renderDashboard(container, currentUser) {
     const totalBudget = 11000;
     const remaining = Math.max(0, totalBudget - totalSpent);
 
-    // Сьогоднішня дата в локальному часі (РРРР-ММ-ДД)
     const now = new Date();
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const todayDate = new Date(todayStr);
 
-    // Чергування
     const futureDuties = events
       .filter(e => e.event_type === 'duty' && e.event_date >= todayStr)
       .sort((a, b) => a.event_date.localeCompare(b.event_date));
@@ -50,7 +47,6 @@ export async function renderDashboard(container, currentUser) {
       else dutyText = `Чергування <b>через ${diffDays} ${getDaysPlural(diffDays)}</b>: відповідальна <b>${personName}</b>!`;
     }
 
-    // Генеральне прибирання
     const futureGeneral = events
       .filter(e => e.event_type === 'general_cleaning' && e.event_date >= todayStr)
       .sort((a, b) => a.event_date.localeCompare(b.event_date));
@@ -68,7 +64,7 @@ export async function renderDashboard(container, currentUser) {
     container.innerHTML = `
       <div class="space-y-6">
         <!-- Інформаційний Банер -->
-        <div class="glass-card p-6 space-y-2 rounded-3xl border-purple-200/80 bg-purple-100/50">
+        <div class="glass-card p-6 space-y-2 rounded-[1.5rem] border-purple-200/80 bg-purple-100/50">
           <div class="flex items-center space-x-2">
             <i data-lucide="sparkles" class="w-5 h-5 text-purple-700"></i>
             <h3 class="font-semibold text-base text-purple-950 tracking-tight">Чергування & Прибирання</h3>
@@ -78,12 +74,12 @@ export async function renderDashboard(container, currentUser) {
         </div>
 
         <!-- Спільний Бюджет -->
-        <div class="glass-card p-6 rounded-3xl space-y-4">
+        <div class="glass-card p-6 rounded-[1.5rem] space-y-4">
           <div class="flex justify-between items-center">
             <h3 class="font-semibold text-gray-900 text-sm tracking-tight flex items-center gap-2">
               <i data-lucide="wallet" class="w-4 h-4 text-purple-600"></i> Спільний бюджет (11 000 грн)
             </h3>
-            <button id="btn-go-to-finance" class="bg-purple-100 hover:bg-purple-200 text-purple-900 text-xs px-3 py-1.5 rounded-xl font-semibold transition cursor-pointer flex items-center gap-1.5">
+            <button id="btn-go-to-finance" class="bg-white hover:bg-gray-50 border border-purple-100 text-purple-700 text-xs px-4 py-2 rounded-full font-bold shadow-sm transition cursor-pointer flex items-center gap-1.5">
               <span>Витрати</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </button>
@@ -112,21 +108,21 @@ export async function renderDashboard(container, currentUser) {
         </div>
 
         <!-- Покупки на сьогодні -->
-        <div class="glass-card p-6 rounded-3xl space-y-4">
+        <div class="glass-card p-6 rounded-[1.5rem] space-y-4">
           <div class="flex justify-between items-center">
             <h3 class="font-semibold text-gray-900 text-sm tracking-tight flex items-center gap-2">
               <i data-lucide="shopping-bag" class="w-4 h-4 text-purple-600"></i> Покупки на сьогодні
             </h3>
-            <button id="btn-sos" class="bg-rose-500 hover:bg-rose-600 text-white text-[11px] px-3.5 py-1.5 rounded-xl font-semibold shadow-md shadow-rose-200 cursor-pointer flex items-center gap-1.5 transition">
+            <button id="btn-sos" class="bg-rose-500 hover:bg-rose-600 text-white text-[11px] px-3.5 py-1.5 rounded-full font-semibold shadow-md shadow-rose-500/30 cursor-pointer flex items-center gap-1.5 transition">
               <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> Я в магазині
             </button>
           </div>
 
           <div class="space-y-2">
-            <input type="text" id="dash-shop-name" placeholder="Назва продукту (натисни Enter)..." class="bg-white/80 border border-purple-100 rounded-2xl px-4 py-2.5 text-xs w-full font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <input type="text" id="dash-shop-name" placeholder="Назва продукту (натисни Enter)..." class="bg-white/80 border border-purple-100 rounded-full px-4 py-2.5 text-xs w-full font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all">
             <div class="flex gap-2">
-              <input type="number" id="dash-shop-amount" value="1" placeholder="Кількість" class="bg-white/80 border border-purple-100 rounded-2xl px-3 py-2 text-xs w-1/2 font-semibold">
-              <select id="dash-shop-unit" class="bg-white/80 border border-purple-100 rounded-2xl px-3 py-2 text-xs font-bold text-purple-900 w-1/2">
+              <input type="number" id="dash-shop-amount" value="1" placeholder="Кількість" class="bg-white/80 border border-purple-100 rounded-full px-4 py-2.5 text-xs w-1/2 font-semibold transition-all">
+              <select id="dash-shop-unit" class="bg-white/80 border border-purple-100 rounded-full px-4 py-2.5 text-xs font-bold text-purple-900 w-1/2 transition-all">
                 <option value="шт">шт</option>
                 <option value="г">г</option>
                 <option value="кг">кг</option>
@@ -134,17 +130,17 @@ export async function renderDashboard(container, currentUser) {
                 <option value="л">л</option>
                 <option value="упаковка">уп</option>
               </select>
-              <button id="btn-dash-add-shop" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-xs font-bold rounded-2xl shadow-md cursor-pointer transition">+</button>
+              <button id="btn-dash-add-shop" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-xs font-bold rounded-full shadow-md cursor-pointer transition">+</button>
             </div>
           </div>
 
           <div class="space-y-2 pt-2">
             ${shoppingList.length ? shoppingList.map(i => `
-              <div data-id="${i.id}" class="dash-shop-item p-3.5 bg-white/80 hover:bg-purple-50/50 rounded-2xl flex justify-between items-center border border-purple-100/60 shadow-2xs transition cursor-pointer ${i.is_crossed_out ? 'opacity-50' : ''}">
+              <div data-id="${i.id}" class="dash-shop-item p-3.5 bg-white/80 hover:bg-purple-50/50 rounded-[1.25rem] flex justify-between items-center border border-purple-100/60 shadow-sm transition cursor-pointer ${i.is_crossed_out ? 'opacity-50 grayscale' : ''}">
                 <div class="flex items-center gap-2.5 pointer-events-none">
                   <i data-lucide="${i.is_crossed_out ? 'check-circle-2' : 'circle'}" class="w-4 h-4 ${i.is_crossed_out ? 'text-purple-600' : 'text-gray-300'}"></i>
                   <span class="text-xs font-bold ${i.is_crossed_out ? 'line-through text-gray-400' : 'text-gray-900'}">${i.item_name}</span>
-                  <span class="text-[10px] bg-purple-100/80 text-purple-900 px-2.5 py-0.5 rounded-xl font-bold">${i.amount || '1 шт'}</span>
+                  <span class="text-[10px] bg-purple-100/80 text-purple-900 px-2.5 py-0.5 rounded-full font-bold ml-1">${i.amount || '1 шт'}</span>
                 </div>
                 <button data-id="${i.id}" class="dash-shop-delete text-rose-400 hover:text-rose-600 p-1.5 text-xs font-bold cursor-pointer">
                   <i data-lucide="x" class="w-3.5 h-3.5"></i>
@@ -168,7 +164,6 @@ export async function renderDashboard(container, currentUser) {
     document.getElementById('card-dasha-spent').onclick = openFinance;
     document.getElementById('card-remaining-spent').onclick = openFinance;
 
-    // Безпечна відправка сповіщення в Telegram
     document.getElementById('btn-sos').onclick = async () => {
       try {
         showToast('Надсилаємо сповіщення в Telegram...', 'info');
@@ -233,6 +228,8 @@ export async function renderDashboard(container, currentUser) {
       const ctx = canvas.getContext("2d");
       if (financeChart) financeChart.destroy();
 
+      const isDark = document.body.classList.contains('dark-mode');
+
       financeChart = new Chart(ctx, {
         type: "doughnut",
         data: {
@@ -243,16 +240,20 @@ export async function renderDashboard(container, currentUser) {
               dashaSpent || (totalSpent === 0 ? 0 : 0.01), 
               remaining
             ],
-            backgroundColor: ["#9333EA", "#EC4899", "#E9D5FF"],
-            borderWidth: 2,
-            borderColor: "#ffffff"
+            backgroundColor: [
+              "#C084FC", 
+              "#F472B6", 
+              isDark ? "rgba(255, 255, 255, 0.05)" : "#E9D5FF"
+            ],
+            borderWidth: isDark ? 4 : 2,
+            borderColor: isDark ? "#151724" : "#ffffff"
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
-          cutout: '75%'
+          cutout: '65%' // Робить кільце товстішим
         }
       });
     }
