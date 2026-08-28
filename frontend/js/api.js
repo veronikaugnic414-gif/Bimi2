@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://bimi-wgz8.onrender.com';
+const API_BASE_URL = 'https://bimi-backend.onrender.com';
 
 export const api = {
     // --- 👤 КОРИСТУВАЧІ ---
