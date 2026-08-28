@@ -13,12 +13,18 @@ export const api = {
     getEvents: () => 
         fetch(`${API_BASE_URL}/calendar/events`).then(res => res.json()),
     
-    createEvent: (data) => 
-        fetch(`${API_BASE_URL}/calendar/events`, {
+    createEvent: async (data) => {
+        const res = await fetch(`${API_BASE_URL}/calendar/events`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
-        }).then(res => res.json()),
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || 'Помилка створення події');
+        }
+        return await res.json();
+    },
 
     deleteEvent: (eventId) => 
         fetch(`${API_BASE_URL}/calendar/events/${eventId}`, { method: 'DELETE' }).then(res => res.json()),
@@ -35,6 +41,9 @@ export const api = {
 
     getCleaningChecklist: () => 
         fetch(`${API_BASE_URL}/calendar/checklist`).then(res => res.json()),
+
+    addCleaningTask: (taskName) => 
+        fetch(`${API_BASE_URL}/calendar/checklist?task_name=${encodeURIComponent(taskName)}`, { method: 'POST' }).then(res => res.json()),
 
     toggleChecklistTask: (taskId) => 
         fetch(`${API_BASE_URL}/calendar/checklist/${taskId}/toggle`, { method: 'PATCH' }).then(res => res.json()),

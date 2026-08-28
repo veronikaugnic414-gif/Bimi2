@@ -1,8 +1,23 @@
 from fastapi import APIRouter, HTTPException
+from typing import Optional
+from pydantic import BaseModel
 from app.database import supabase
-from app.schemas.models import EventCreate, SwapRequestCreate
 
 router = APIRouter(prefix="/calendar", tags=["Calendar & Cleaning"])
+
+class EventInput(BaseModel):
+    title: str
+    event_type: str
+    event_date: str
+    assigned_user_id: Optional[int] = 1
+    description: Optional[str] = ""
+    color_code: Optional[str] = None
+
+class SwapRequestInput(BaseModel):
+    requester_id: int
+    target_user_id: int
+    original_event_id: int
+    proposed_event_id: int
 
 # ==========================================
 # 📅 ПОДІЇ ТА КАЛЕНДАР
@@ -15,9 +30,15 @@ def get_events():
     return res.data or []
 
 @router.post("/events")
-def create_event(event: EventCreate):
+def create_event(event: EventInput):
     """Створити нову подію (чергування, іспит, поїздка додому)"""
-    event_data = event.model_dump()
+    event_data = {
+        "title": event.title,
+        "event_type": event.event_type,
+        "event_date": event.event_date,
+        "assigned_user_id": event.assigned_user_id,
+        "description": event.description or ""
+    }
     
     # Автоматичне встановлення кольорів для подій
     if event.event_type == "trip_home":
@@ -28,11 +49,13 @@ def create_event(event: EventCreate):
         event_data["color_code"] = "#FFC107"
     elif event.event_type == "exam":
         event_data["color_code"] = "#C084FC"
+    else:
+        event_data["color_code"] = event.color_code or "#A855F7"
 
     res = supabase.table("calendar_events").insert(event_data).execute()
     if not res.data:
-        raise HTTPException(status_code=400, detail="Не вдалося створити подію")
-    return {"message": "Подію успішно додано", "data": res.data}
+        raise HTTPException(status_code=400, detail="Не вдалося зберегти подію в базі")
+    return {"message": "Подію успішно додано", "data": res.data[0]}
 
 @router.delete("/events/{event_id}")
 def delete_event(event_id: int):
@@ -52,7 +75,7 @@ def clear_schedule():
 # ==========================================
 
 @router.post("/swap-request")
-def create_swap_request(swap: SwapRequestCreate):
+def create_swap_request(swap: SwapRequestInput):
     """Створити запит на обмін чергуваннями з перевіркою існування подій"""
     orig = supabase.table("calendar_events").select("id").eq("id", swap.original_event_id).execute()
     prop = supabase.table("calendar_events").select("id").eq("id", swap.proposed_event_id).execute()
@@ -108,7 +131,7 @@ def approve_swap_request(request_id: int):
 @router.get("/checklist")
 def get_cleaning_checklist():
     """Отримати чек-лист генерального прибирання"""
-    res = supabase.table("cleaning_checklist").select("*").execute()
+    res = supabase.table("cleaning_checklist").select("*").order("id").execute()
     return res.data or []
 
 @router.post("/checklist")

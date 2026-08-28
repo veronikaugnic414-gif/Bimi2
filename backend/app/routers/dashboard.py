@@ -7,7 +7,7 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 def get_dashboard_summary(user_id: int):
     user_name = "Вероніко" if user_id == 1 else "Дашо"
     
-    # 1. Фінанси (використовуємо точну колонку payer_id!)
+    # 1. Фінанси
     veronika_spent = 0.0
     dasha_spent = 0.0
     try:
@@ -32,7 +32,7 @@ def get_dashboard_summary(user_id: int):
     except Exception as err:
         print("Помилка отримання покупок:", err)
 
-    # 3. Події (перевіряємо calendar_events)
+    # 3. Події
     events_data = []
     try:
         events_res = supabase.table("calendar_events").select("*").order("event_date").execute()

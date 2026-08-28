@@ -15,7 +15,6 @@ function getDaysPlural(n) {
 
 export async function renderDashboard(container, currentUser) {
   try {
-    // ⚡ 1 швидкий запит до бекенду
     const summaryData = await api.getDashboardSummary(currentUser?.id || 1);
 
     const events = summaryData.events || [];
@@ -27,7 +26,6 @@ export async function renderDashboard(container, currentUser) {
     const totalBudget = 11000;
     const remaining = Math.max(0, totalBudget - totalSpent);
 
-    // Сьогоднішня дата в локальному часі (РРРР-ММ-ДД)
     const now = new Date();
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const todayDate = new Date(todayStr);
