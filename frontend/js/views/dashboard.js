@@ -90,19 +90,19 @@ export async function renderDashboard(container, currentUser) {
           </div>
 
           <div class="grid grid-cols-3 gap-2.5 text-center pt-3 border-t border-purple-100/60">
-            <div id="card-veronika-spent" class="p-3 rounded-2xl bg-purple-50/80 cursor-pointer hover:bg-purple-100/80 transition">
-              <p class="text-[11px] font-semibold text-purple-950">Вероніка</p>
-              <p class="text-xs font-bold text-purple-700 mt-0.5">${veronikaSpent} грн</p>
+            <div id="card-veronika-spent" class="dash-user-card p-3 rounded-2xl bg-purple-50/80 cursor-pointer hover:bg-purple-100/80 transition">
+              <p class="dash-v-name text-[11px] font-semibold text-purple-950">Вероніка</p>
+              <p class="dash-v-amount text-xs font-bold text-purple-700 mt-0.5">${veronikaSpent} грн</p>
             </div>
 
-            <div id="card-dasha-spent" class="p-3 rounded-2xl bg-pink-50/80 cursor-pointer hover:bg-pink-100/80 transition">
-              <p class="text-[11px] font-semibold text-pink-950">Даша</p>
-              <p class="text-xs font-bold text-pink-600 mt-0.5">${dashaSpent} грн</p>
+            <div id="card-dasha-spent" class="dash-user-card p-3 rounded-2xl bg-pink-50/80 cursor-pointer hover:bg-pink-100/80 transition">
+              <p class="dash-d-name text-[11px] font-semibold text-pink-950">Даша</p>
+              <p class="dash-d-amount text-xs font-bold text-pink-600 mt-0.5">${dashaSpent} грн</p>
             </div>
 
-            <div id="card-remaining-spent" class="p-3 rounded-2xl bg-gray-50/80 cursor-pointer hover:bg-gray-100/80 transition">
-              <p class="text-[11px] font-semibold text-gray-700">Залишок</p>
-              <p class="text-xs font-bold text-gray-900 mt-0.5">${remaining} грн</p>
+            <div id="card-remaining-spent" class="dash-user-card p-3 rounded-2xl bg-gray-50/80 cursor-pointer hover:bg-gray-100/80 transition">
+              <p class="dash-r-name text-[11px] font-semibold text-gray-700">Залишок</p>
+              <p class="dash-r-amount text-xs font-bold text-gray-900 mt-0.5">${remaining} грн</p>
             </div>
           </div>
         </div>
@@ -230,30 +230,37 @@ export async function renderDashboard(container, currentUser) {
 
       const isDark = document.body.classList.contains('dark-mode');
 
+      // Мінімально видима товщина для дрібних витрат
+      const minVisible = totalBudget * 0.04; 
+      const vRender = veronikaSpent > 0 ? Math.max(veronikaSpent, minVisible) : 0;
+      const dRender = dashaSpent > 0 ? Math.max(dashaSpent, minVisible) : 0;
+      const rRender = Math.max(0, totalBudget - vRender - dRender);
+
       financeChart = new Chart(ctx, {
         type: "doughnut",
         data: {
           labels: ["Вероніка", "Даша", "Залишок"],
           datasets: [{
             data: [
-              veronikaSpent || (totalSpent === 0 ? 0 : 0.01), 
-              dashaSpent || (totalSpent === 0 ? 0 : 0.01), 
-              remaining
+              vRender || (totalSpent === 0 ? 0 : 0.01), 
+              dRender || (totalSpent === 0 ? 0 : 0.01), 
+              rRender
             ],
             backgroundColor: [
-              "#C084FC", 
-              "#F472B6", 
-              isDark ? "rgba(255, 255, 255, 0.05)" : "#E9D5FF"
+              "#C084FC", // Вероніка - красивий бузковий
+              "#F472B6", // Даша - красивий рожевий
+              isDark ? "#24283B" : "#F3E8FF" // Залишок - м'який графітовий
             ],
-            borderWidth: isDark ? 4 : 2,
-            borderColor: isDark ? "#151724" : "#ffffff"
+            borderWidth: isDark ? 4 : 3, 
+            borderColor: isDark ? "#11131E" : "#ffffff", 
+            borderRadius: 6 // РОБИТЬ КІЛЬЦЕ ОРГАНІЧНИМ (округлі кінці)
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
-          cutout: '65%' // Робить кільце товстішим
+          cutout: '72%' // Ідеальна товщина кільця (не затонке, не затовсте)
         }
       });
     }
