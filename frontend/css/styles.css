@@ -17,7 +17,7 @@ h1, h2, h3, h4, .font-black {
 aside {
   border-radius: 0 1.5rem 1.5rem 0 !important;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02) !important;
-  overflow: hidden !important; /* Обрізає гострі кути внутрішніх елементів */
+  overflow: hidden !important; 
 }
 
 header {
@@ -99,10 +99,10 @@ select, .custom-select {
 }
 
 /* =========================================================
-   🌌 ТЕМНА ТЕМА (Clean Neon Minimal)
+   🌌 ТЕМНА ТЕМА (Ultimate Clean Dark Mode)
    ========================================================= */
 body.dark-mode {
-  color-scheme: dark; /* Каже браузеру рендерити скролбари темними */
+  color-scheme: dark; 
   background-color: #090A0F !important;
   background-image: 
     radial-gradient(circle at 10% 20%, rgba(147, 51, 234, 0.07), transparent 30%),
@@ -123,57 +123,63 @@ body.dark-mode nav.fixed {
 body.dark-mode aside { border-left: none !important; border-top: none !important; border-bottom: none !important; }
 body.dark-mode header { border-top: none !important; border-left: none !important; border-right: none !important; }
 
+/* Головні зовнішні картки */
 body.dark-mode .glass-card,
 body.dark-mode .soft-card {
   background: #11131E !important; 
   border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.9) !important;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6) !important;
   border-radius: 1.5rem !important; 
 }
 
-body.dark-mode div[class*="bg-white"],
-body.dark-mode div[class*="bg-gray-"],
-body.dark-mode div[class*="bg-purple-50"],
-body.dark-mode div[class*="bg-pink-50"],
-body.dark-mode div[class*="bg-rose-50"],
-body.dark-mode .dash-user-card {
+/* 🛑 АБСОЛЮТНИЙ ЗАХИСТ ВІД СВІТЛИХ ФОНІВ (Плашки, Шаблони) */
+body.dark-mode [class*="bg-white"]:not(button):not(.dash-shop-amount),
+body.dark-mode [class*="bg-gray-50"]:not(button):not(input):not(select),
+body.dark-mode [class*="bg-gray-100"]:not(button),
+body.dark-mode [class*="bg-gray-200"]:not(button),
+body.dark-mode .dash-user-card,
+body.dark-mode .dash-shop-item {
   background: #1A1D2D !important; 
   border: 1px solid rgba(255, 255, 255, 0.04) !important;
   border-radius: 1.25rem !important;
   color: #F8FAFC !important;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-  transition: all 0.25s ease;
+  box-shadow: none !important;
+  transition: all 0.2s ease;
 }
 
-body.dark-mode div[class*="bg-gray-"]:hover,
-body.dark-mode div[class*="bg-white"]:hover,
-body.dark-mode div[class*="bg-purple-50"]:hover,
-body.dark-mode .dash-user-card:hover {
+body.dark-mode [class*="bg-white"]:hover:not(button):not(input),
+body.dark-mode [class*="bg-gray-"]:hover:not(button):not(input),
+body.dark-mode .dash-user-card:hover,
+body.dark-mode .dash-shop-item:hover {
   background: #23273C !important;
   border-color: rgba(168, 85, 247, 0.3) !important;
-  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15) !important;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
-/* Виправлення мобільних кнопок хедера (Профіль / Тема) */
+/* 💎 БЕДЖІ ТА ДРІБНІ КНОПКИ (Профіль, Тема, 5 шт) */
+body.dark-mode [class*="bg-purple-100"],
+body.dark-mode [class*="bg-purple-50"],
 body.dark-mode header button {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(168, 85, 247, 0.15) !important;
   color: #D8B4FE !important;
+  border: 1px solid rgba(168, 85, 247, 0.1) !important;
+}
+body.dark-mode [class*="bg-purple-100"]:hover,
+body.dark-mode [class*="bg-purple-50"]:hover,
+body.dark-mode header button:hover {
+  background: rgba(168, 85, 247, 0.25) !important;
 }
 
-body.dark-mode button.bg-white,
-body.dark-mode button[class*="bg-purple-50"] {
-  background: rgba(168, 85, 247, 0.1) !important;
-  border: 1px solid rgba(168, 85, 247, 0.2) !important;
-  color: #D8B4FE !important;
+body.dark-mode [class*="bg-pink-100"],
+body.dark-mode [class*="bg-pink-50"],
+body.dark-mode [class*="bg-rose-50"],
+body.dark-mode [class*="bg-red-50"] {
+  background: rgba(236, 72, 153, 0.15) !important;
+  color: #F9A8D4 !important;
+  border: 1px solid rgba(236, 72, 153, 0.1) !important;
 }
-body.dark-mode button.bg-red-50,
-body.dark-mode button.bg-rose-50 {
-  background: rgba(244, 63, 94, 0.1) !important;
-  border: 1px solid rgba(244, 63, 94, 0.2) !important;
-  color: #FDA4AF !important;
-}
+
+/* Головні яскраві кнопки */
 body.dark-mode button.bg-purple-600,
 body.dark-mode button[class*="bg-purple-500"] {
   background: linear-gradient(135deg, #A855F7 0%, #6366F1 100%) !important;
@@ -184,11 +190,12 @@ body.dark-mode button[class*="bg-purple-500"] {
 body.dark-mode button.bg-pink-500,
 body.dark-mode button.bg-rose-500 {
   background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%) !important;
-  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4) !important;
   border: none !important;
   color: #ffffff !important;
 }
 
+/* Поля вводу */
 body.dark-mode input,
 body.dark-mode select,
 body.dark-mode textarea {
@@ -207,6 +214,7 @@ body.dark-mode select {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
 }
 
+/* ТЕКСТИ (Без зайвого світіння) */
 body.dark-mode .dash-v-name,
 body.dark-mode .dash-v-amount,
 body.dark-mode [class*="text-purple-"],
@@ -241,6 +249,7 @@ body.dark-mode [class*="text-gray-500"] {
 }
 body.dark-mode [class*="text-gray-400"] { color: #64748B !important; }
 
+/* БОКОВА ПАНЕЛЬ */
 body.dark-mode aside .nav-btn,
 body.dark-mode nav .nav-btn {
   background: transparent !important;
@@ -265,6 +274,7 @@ body.dark-mode nav .nav-btn.active {
   font-weight: 600;
 }
 
+/* КАЛЕНДАР */
 .cal-day {
   aspect-ratio: 1;
   display: flex;
