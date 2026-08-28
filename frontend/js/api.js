@@ -9,6 +9,10 @@ export const api = {
     getDashboardSummary: (userId) => 
         fetch(`${API_BASE_URL}/dashboard/summary/${userId}`).then(res => res.json()),
 
+    // --- 🔔 СПОВІЩЕННЯ ---
+    sendStoreAlert: (userId) => 
+        fetch(`${API_BASE_URL}/notifications/store-alert/${userId}`, { method: 'POST' }).then(res => res.json()),
+
     // --- 📅 КАЛЕНДАР & ПРИБИРАННЯ ---
     getEvents: () => 
         fetch(`${API_BASE_URL}/calendar/events`).then(res => res.json()),

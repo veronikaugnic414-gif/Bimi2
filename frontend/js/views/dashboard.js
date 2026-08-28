@@ -15,6 +15,7 @@ function getDaysPlural(n) {
 
 export async function renderDashboard(container, currentUser) {
   try {
+    // ⚡ 1 швидкий запит до бекенду
     const summaryData = await api.getDashboardSummary(currentUser?.id || 1);
 
     const events = summaryData.events || [];
@@ -26,6 +27,7 @@ export async function renderDashboard(container, currentUser) {
     const totalBudget = 11000;
     const remaining = Math.max(0, totalBudget - totalSpent);
 
+    // Сьогоднішня дата в локальному часі (РРРР-ММ-ДД)
     const now = new Date();
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const todayDate = new Date(todayStr);
@@ -166,7 +168,21 @@ export async function renderDashboard(container, currentUser) {
     document.getElementById('card-dasha-spent').onclick = openFinance;
     document.getElementById('card-remaining-spent').onclick = openFinance;
 
-    document.getElementById('btn-sos').onclick = () => showToast('Сповіщення надіслано!', 'info');
+    // Безпечна відправка сповіщення в Telegram
+    document.getElementById('btn-sos').onclick = async () => {
+      try {
+        showToast('Надсилаємо сповіщення в Telegram...', 'info');
+        const res = await api.sendStoreAlert(currentUser?.id || 1);
+        if (res && res.status === 'ok') {
+          showToast('Повідомлення зі списком надіслано в чат! 🛒', 'success');
+        } else {
+          showToast(res?.message || 'Не вдалося надіслати сповіщення', 'error');
+        }
+      } catch (err) {
+        console.error("SOS Alert error:", err);
+        showToast('Помилка відправки в Telegram', 'error');
+      }
+    };
 
     const addShoppingHandler = async () => {
       const nameInput = document.getElementById('dash-shop-name');
