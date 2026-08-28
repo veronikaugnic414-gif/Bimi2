@@ -7,24 +7,51 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 def get_dashboard_summary(user_id: int):
     user_name = "Вероніко" if user_id == 1 else "Дашо"
     
-    # 1. Фінанси
-    exp_res = supabase.table("expenses").select("*").execute()
-    total_spent = sum(e["amount"] for e in (exp_res.data or []))
-    
-    # 2. Список покупок (Тепер забираємо УСІ товари, щоб закреслені залишалися на екрані!)
-    shop_res = supabase.table("shopping_list").select("*").order("created_at").execute()
-    
-    # 3. Найближчі події
-    events_res = supabase.table("events").select("*").order("event_date").limit(3).execute()
-    
+    # 1. Фінанси (використовуємо точну колонку payer_id!)
+    veronika_spent = 0.0
+    dasha_spent = 0.0
+    try:
+        exp_res = supabase.table("expenses").select("payer_id, amount").execute()
+        for e in (exp_res.data or []):
+            amt = float(e.get("amount") or 0)
+            payer = e.get("payer_id")
+            if payer == 1:
+                veronika_spent += amt
+            elif payer == 2:
+                dasha_spent += amt
+    except Exception as err:
+        print("Помилка отримання витрат:", err)
+
+    total_spent = veronika_spent + dasha_spent
+
+    # 2. Список покупок
+    shopping_data = []
+    try:
+        shop_res = supabase.table("shopping_list").select("*").order("created_at").execute()
+        shopping_data = shop_res.data or []
+    except Exception as err:
+        print("Помилка отримання покупок:", err)
+
+    # 3. Події (перевіряємо calendar_events)
+    events_data = []
+    try:
+        events_res = supabase.table("calendar_events").select("*").order("event_date").execute()
+        events_data = events_res.data or []
+        if not events_data:
+            events_res_alt = supabase.table("events").select("*").order("event_date").execute()
+            events_data = events_res_alt.data or []
+    except Exception as err:
+        print("Помилка отримання подій:", err)
+
     return {
         "greeting": f"Вітаю, {user_name}!",
-        "duty_status": "Твоє чергування через 2 дні. Генеральне прибирання через 10 днів!",
-        "finance_widget": {
-            "total_limit": 11000,
+        "events": events_data,
+        "today_shopping_list": shopping_data,
+        "finance": {
+            "veronika_spent": veronika_spent,
+            "dasha_spent": dasha_spent,
             "total_spent": total_spent,
-            "remaining": 11000 - total_spent
-        },
-        "today_shopping_list": shop_res.data or [],
-        "upcoming_events": events_res.data or []
+            "total_limit": 11000,
+            "remaining": max(0.0, 11000.0 - total_spent)
+        }
     }

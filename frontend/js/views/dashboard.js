@@ -15,23 +15,21 @@ function getDaysPlural(n) {
 
 export async function renderDashboard(container, currentUser) {
   try {
-    const events = await api.getEvents();
-    const summary = await api.getDashboardSummary(currentUser.id);
+    // ⚡ 1 швидкий запит до бекенду
+    const summaryData = await api.getDashboardSummary(currentUser?.id || 1);
 
-    let veronikaSpent = 0;
-    let dashaSpent = 0;
-
-    try {
-      const financeData = await api.getFinanceSummary();
-      veronikaSpent = Number(financeData?.veronika_spent || 0);
-      dashaSpent = Number(financeData?.dasha_spent || 0);
-    } catch (e) {}
+    const events = summaryData.events || [];
+    const shoppingList = summaryData.today_shopping_list || [];
+    const veronikaSpent = Number(summaryData.finance?.veronika_spent || 0);
+    const dashaSpent = Number(summaryData.finance?.dasha_spent || 0);
 
     const totalSpent = veronikaSpent + dashaSpent;
     const totalBudget = 11000;
     const remaining = Math.max(0, totalBudget - totalSpent);
 
-    const todayStr = "2026-08-11";
+    // Сьогоднішня дата в локальному часі (РРРР-ММ-ДД)
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const todayDate = new Date(todayStr);
 
     // Чергування
@@ -43,7 +41,7 @@ export async function renderDashboard(container, currentUser) {
     if (futureDuties.length > 0) {
       const nextDuty = futureDuties[0];
       const diffDays = Math.ceil((new Date(nextDuty.event_date) - todayDate) / (1000 * 60 * 60 * 24));
-      const personName = Number(nextDuty.assigned_user_id) === currentUser.id 
+      const personName = Number(nextDuty.assigned_user_id) === (currentUser?.id || 1)
         ? "ти" 
         : (Number(nextDuty.assigned_user_id) === 1 ? "Вероніка" : "Даша");
 
@@ -52,6 +50,7 @@ export async function renderDashboard(container, currentUser) {
       else dutyText = `Чергування <b>через ${diffDays} ${getDaysPlural(diffDays)}</b>: відповідальна <b>${personName}</b>!`;
     }
 
+    // Генеральне прибирання
     const futureGeneral = events
       .filter(e => e.event_type === 'general_cleaning' && e.event_date >= todayStr)
       .sort((a, b) => a.event_date.localeCompare(b.event_date));
@@ -66,8 +65,6 @@ export async function renderDashboard(container, currentUser) {
       else generalText = `Генеральне прибирання <b>через ${diffDaysG} ${getDaysPlural(diffDaysG)}</b>!`;
     }
 
-    const shoppingList = summary?.today_shopping_list || [];
-
     container.innerHTML = `
       <div class="space-y-6">
         <!-- Інформаційний Банер -->
@@ -80,7 +77,7 @@ export async function renderDashboard(container, currentUser) {
           <p class="text-purple-700/80 text-[11px] border-t border-purple-200/60 pt-2 font-medium">${generalText}</p>
         </div>
 
-        <!-- Спільний Бюджет із кнопкою переходу до Витрат -->
+        <!-- Спільний Бюджет -->
         <div class="glass-card p-6 rounded-3xl space-y-4">
           <div class="flex justify-between items-center">
             <h3 class="font-semibold text-gray-900 text-sm tracking-tight flex items-center gap-2">
@@ -161,7 +158,6 @@ export async function renderDashboard(container, currentUser) {
 
     if (window.lucide) window.lucide.createIcons();
 
-    // Кнопка переходу на вкладку "Бюджет"
     const openFinance = () => {
       const financeBtn = document.querySelector('.nav-btn[data-tab="finance"]');
       if (financeBtn) financeBtn.click();
