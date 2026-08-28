@@ -85,7 +85,6 @@ input[type="number"] {
 input, select, textarea {
   border: 1px solid rgba(147, 51, 234, 0.15);
   background: rgba(255, 255, 255, 0.9);
-  padding: 0.75rem 1.25rem !important;
 }
 
 select, .custom-select {
@@ -133,10 +132,10 @@ body.dark-mode .soft-card {
 }
 
 /* 🛑 АБСОЛЮТНИЙ ЗАХИСТ ВІД СВІТЛИХ ФОНІВ (Плашки, Шаблони) */
-body.dark-mode [class*="bg-white"]:not(button):not(.dash-shop-amount),
-body.dark-mode [class*="bg-gray-50"]:not(button):not(input):not(select),
-body.dark-mode [class*="bg-gray-100"]:not(button),
-body.dark-mode [class*="bg-gray-200"]:not(button),
+body.dark-mode div[class*="bg-white"]:not(button):not(.dash-shop-amount),
+body.dark-mode div[class*="bg-gray-50"]:not(button):not(input):not(select),
+body.dark-mode div[class*="bg-gray-100"]:not(button),
+body.dark-mode div[class*="bg-gray-200"]:not(button),
 body.dark-mode .dash-user-card,
 body.dark-mode .dash-shop-item {
   background: #1A1D2D !important; 
@@ -147,8 +146,8 @@ body.dark-mode .dash-shop-item {
   transition: all 0.2s ease;
 }
 
-body.dark-mode [class*="bg-white"]:hover:not(button):not(input),
-body.dark-mode [class*="bg-gray-"]:hover:not(button):not(input),
+body.dark-mode div[class*="bg-white"]:hover:not(button):not(input),
+body.dark-mode div[class*="bg-gray-"]:hover:not(button):not(input),
 body.dark-mode .dash-user-card:hover,
 body.dark-mode .dash-shop-item:hover {
   background: #23273C !important;
@@ -156,7 +155,7 @@ body.dark-mode .dash-shop-item:hover {
   transform: translateY(-1px);
 }
 
-/* 💎 БЕДЖІ ТА ДРІБНІ КНОПКИ (Профіль, Тема, 5 шт) */
+/* 💎 БЕДЖІ ТА ДРІБНІ КНОПКИ */
 body.dark-mode [class*="bg-purple-100"],
 body.dark-mode [class*="bg-purple-50"],
 body.dark-mode header button {
@@ -177,6 +176,17 @@ body.dark-mode [class*="bg-red-50"] {
   background: rgba(236, 72, 153, 0.15) !important;
   color: #F9A8D4 !important;
   border: 1px solid rgba(236, 72, 153, 0.1) !important;
+}
+
+/* Фікс світлої кнопки Витрати та Очистити */
+body.dark-mode button[class*="bg-white"],
+body.dark-mode button[class*="bg-gray-50"] {
+  background: rgba(168, 85, 247, 0.1) !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
+  color: #D8B4FE !important;
+}
+body.dark-mode button[class*="bg-white"]:hover {
+  background: rgba(168, 85, 247, 0.2) !important;
 }
 
 /* Головні яскраві кнопки */
@@ -202,7 +212,6 @@ body.dark-mode textarea {
   background: #141622 !important; 
   border: 1px solid rgba(255, 255, 255, 0.05) !important;
   color: #ffffff !important;
-  padding: 0.75rem 1.25rem !important;
 }
 body.dark-mode input:focus, body.dark-mode select:focus {
   background: #1C1F33 !important;
@@ -287,13 +296,32 @@ body.dark-mode nav .nav-btn.active {
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  color: #1f2937; 
 }
+
+.cal-day:hover:not(.empty) {
+  background: rgba(168, 85, 247, 0.1) !important;
+  color: #7e22ce;
+}
+.cal-day.active {
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%) !important;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.cal-day.today:not(.active) {
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: rgba(168, 85, 247, 0.05);
+  color: #9333ea;
+}
+
 body.dark-mode .cal-day {
   color: #ffffff;
   background: transparent;
 }
 body.dark-mode .cal-day:hover:not(.empty) {
   background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff;
 }
 body.dark-mode .cal-day.active {
   background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%) !important;

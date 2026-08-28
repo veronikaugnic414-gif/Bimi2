@@ -63,7 +63,7 @@ export async function renderMenu(container) {
           <h3 id="picker-title" class="font-bold text-lg text-gray-800 text-center">Обери страву</h3>
           
           <div class="relative">
-            <i data-lucide="search" class="absolute left-4 top-3.5 w-4 h-4 text-gray-400"></i>
+            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
             <input type="text" id="recipe-search-input" placeholder="Пошук..." class="w-full bg-gray-50 border-0 rounded-full pl-11 pr-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none">
           </div>
 
