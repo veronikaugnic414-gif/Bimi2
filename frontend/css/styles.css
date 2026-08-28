@@ -12,7 +12,7 @@ h1, h2, h3, h4, .font-black {
 }
 
 /* =========================================================
-   🔘 ГЛОБАЛЬНЕ ЗАОКРУГЛЕННЯ 
+   🔘 ГЛОБАЛЬНЕ ЗАОКРУГЛЕННЯ (Pill Shape)
    ========================================================= */
 input, select, textarea, button, .list-item {
   border-radius: 1.25rem !important; 
@@ -25,7 +25,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* =========================================================
-   ☀️ СВІТЛА ТЕМА
+   ☀️ СВІТЛА ТЕМА (Glassmorphism)
    ========================================================= */
 .glass-card {
   background: rgba(255, 255, 255, 0.82);
@@ -64,89 +64,160 @@ select, .custom-select {
 }
 
 /* =========================================================
-   🌌 ТЕМНА ТЕМА (High Contrast Neon Aesthetic)
+   🌌 ТЕМНА ТЕМА (Neon Dark Aesthetic)
    ========================================================= */
 
+/* 1. Глибокий космічний фон */
 body.dark-mode {
-  background-color: #0B0D17 !important;
+  background-color: #090A0F !important;
   background-image: 
-    radial-gradient(circle at 15% 50%, rgba(147, 51, 234, 0.05), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.05), transparent 25%) !important;
+    radial-gradient(circle at 10% 20%, rgba(147, 51, 234, 0.07), transparent 30%),
+    radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.05), transparent 30%) !important;
   color: #ffffff !important;
 }
 
+/* 2. Бокова панель і Хедер */
 body.dark-mode aside,
 body.dark-mode header,
 body.dark-mode nav {
-  background: rgba(16, 18, 27, 0.7) !important;
+  background: rgba(14, 16, 25, 0.7) !important;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
   border-color: rgba(255, 255, 255, 0.03) !important;
 }
 
+/* 3. Головні зовнішні картки (Level 1 Surface) */
 body.dark-mode .glass-card,
 body.dark-mode .soft-card {
-  background: #151724 !important; 
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.8) !important;
+  background: #11131E !important; 
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.9) !important;
   border-radius: 1.5rem !important; 
 }
 
+/* 4. ВНУТРІШНІ ПЛАШКИ ТА ШАБЛОНИ (Виправляємо сірий жах) */
+/* Жорстко перебиваємо всі світлі класи Tailwind на глибокий синій колір */
 body.dark-mode .bg-white,
+body.dark-mode .bg-white\/80,
+body.dark-mode .bg-white\/90,
 body.dark-mode .bg-gray-50,
+body.dark-mode .bg-gray-50\/80,
+body.dark-mode .bg-gray-100,
+body.dark-mode .bg-gray-200,
+body.dark-mode .bg-purple-50,
+body.dark-mode .bg-purple-50\/50,
+body.dark-mode .bg-purple-50\/80,
+body.dark-mode .bg-pink-50,
 body.dark-mode .dash-user-card {
-  background: rgba(255, 255, 255, 0.05) !important; 
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #1A1D2D !important; /* Глибокий преміальний колір замість сірого бруду */
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
   border-radius: 1.25rem !important;
+  color: #F8FAFC !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02), 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.25s ease;
 }
 
+/* Красиве підсвічування при наведенні на шаблони та картки */
+body.dark-mode .bg-gray-100:hover,
+body.dark-mode .bg-gray-200:hover,
+body.dark-mode .bg-white\/80:hover,
+body.dark-mode .bg-purple-50\/50:hover,
+body.dark-mode .dash-user-card:hover {
+  background: #23273C !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+/* 5. Кнопки (Очистити та інші специфічні) */
+body.dark-mode button.bg-white,
+body.dark-mode button.bg-red-50,
+body.dark-mode button.bg-rose-50 {
+  background: rgba(244, 63, 94, 0.1) !important;
+  border: 1px solid rgba(244, 63, 94, 0.2) !important;
+  color: #FDA4AF !important;
+}
+body.dark-mode button.bg-white:hover,
+body.dark-mode button.bg-red-50:hover,
+body.dark-mode button.bg-rose-50:hover {
+  background: rgba(244, 63, 94, 0.2) !important;
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.2) !important;
+}
+
+/* Головні яскраві кнопки */
+body.dark-mode button.bg-purple-600,
+body.dark-mode button[class*="bg-purple-500"] {
+  background: linear-gradient(135deg, #A855F7 0%, #6366F1 100%) !important;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4) !important;
+  border: none !important;
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+body.dark-mode button.bg-purple-600:hover,
+body.dark-mode button[class*="bg-purple-500"]:hover {
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6) !important;
+  transform: scale(1.03);
+}
+
+/* 6. Поля вводу */
 body.dark-mode input,
 body.dark-mode select,
 body.dark-mode textarea {
-  background: rgba(0, 0, 0, 0.3) !important;
+  background: #141622 !important; 
   border: 1px solid rgba(255, 255, 255, 0.05) !important;
   color: #ffffff !important;
+  border-radius: 9999px !important; 
   padding: 0.75rem 1.25rem !important;
 }
 body.dark-mode input:focus, body.dark-mode select:focus {
-  background: #252838 !important;
+  background: #1C1F33 !important;
   border-color: rgba(168, 85, 247, 0.5) !important;
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2) !important;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.3) !important;
 }
 body.dark-mode input::placeholder { color: #64748B !important; }
 body.dark-mode select {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
 }
 
-/* =========================================================
-   ✨ ПРИМУСОВИЙ НЕОН (Тексти Вероніка/Даша/Залишок)
-   ========================================================= */
+/* 7. ТЕКСТИ ТА NEON GLOW */
+/* Фіолетовий неон (Вероніка) */
 body.dark-mode .dash-v-name,
-body.dark-mode .dash-v-amount {
+body.dark-mode .dash-v-amount,
+body.dark-mode .text-purple-600,
+body.dark-mode .text-purple-700,
+body.dark-mode .text-purple-900 {
   color: #D8B4FE !important;
-  text-shadow: 0 0 12px rgba(216, 180, 254, 0.4) !important;
+  text-shadow: 0 0 10px rgba(216, 180, 254, 0.3) !important;
 }
+
+/* Рожевий неон (Даша) */
 body.dark-mode .dash-d-name,
-body.dark-mode .dash-d-amount {
+body.dark-mode .dash-d-amount,
+body.dark-mode .text-pink-600,
+body.dark-mode .text-pink-900 {
   color: #F9A8D4 !important;
-  text-shadow: 0 0 12px rgba(249, 168, 212, 0.4) !important;
+  text-shadow: 0 0 10px rgba(249, 168, 212, 0.3) !important;
 }
+
+/* Залишок та звичайний текст */
 body.dark-mode .dash-r-name,
-body.dark-mode .dash-r-amount {
-  color: #F8FAFC !important;
+body.dark-mode .dash-r-amount,
+body.dark-mode [class*="text-gray-900"],
+body.dark-mode [class*="text-gray-800"] { 
+  color: #F8FAFC !important; 
   text-shadow: none !important;
 }
 
-body.dark-mode [class*="text-gray-900"],
-body.dark-mode [class*="text-gray-800"] { color: #F8FAFC !important; }
-
+/* Другорядний текст (наприклад: "Чергування змінюється кожен день") */
 body.dark-mode [class*="text-gray-700"],
 body.dark-mode [class*="text-gray-600"],
-body.dark-mode [class*="text-gray-500"] { color: #94A3B8 !important; }
+body.dark-mode [class*="text-gray-500"] { 
+  color: #94A3B8 !important; 
+  text-shadow: none !important;
+}
+body.dark-mode [class*="text-gray-400"] { color: #64748B !important; }
 
-/* =========================================================
-   📱 БОКОВА ПАНЕЛЬ (Nav Buttons) - Ідеальна чистота
-   ========================================================= */
+/* 8. БОКОВА ПАНЕЛЬ */
 body.dark-mode aside .nav-btn,
 body.dark-mode nav .nav-btn {
   background: transparent !important;
@@ -161,7 +232,7 @@ body.dark-mode nav .nav-btn:hover {
 }
 body.dark-mode aside .nav-btn.active,
 body.dark-mode nav .nav-btn.active {
-  background: rgba(168, 85, 247, 0.15) !important;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.15)) !important;
   color: #D8B4FE !important; 
   border: 1px solid rgba(168, 85, 247, 0.25) !important;
 }
@@ -171,36 +242,7 @@ body.dark-mode nav .nav-btn.active {
   font-weight: 600;
 }
 
-/* =========================================================
-   🔘 КНОПКИ (Neon Glow)
-   ========================================================= */
-body.dark-mode button.bg-purple-600,
-body.dark-mode button[class*="bg-purple-500"] {
-  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%) !important;
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35) !important;
-  border: none !important;
-  color: #ffffff !important;
-}
-body.dark-mode button.bg-pink-500,
-body.dark-mode button.bg-rose-500 {
-  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%) !important;
-  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.35) !important;
-  border: none !important;
-  color: #ffffff !important;
-}
-body.dark-mode button.bg-white,
-body.dark-mode button[class*="bg-gray-50"] {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #e2e8f0 !important;
-  border-color: rgba(255,255,255, 0.15) !important;
-}
-body.dark-mode button.bg-white:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-}
-
-/* =========================================================
-   📅 КАЛЕНДАР
-   ========================================================= */
+/* 9. КАЛЕНДАР */
 .cal-day {
   aspect-ratio: 1;
   display: flex;
