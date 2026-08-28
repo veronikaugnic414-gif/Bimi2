@@ -19,6 +19,8 @@ window.openUserModal = function() {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
+
   const savedUser = localStorage.getItem("household_user");
   if (savedUser) {
     try {
@@ -42,6 +44,32 @@ document.addEventListener("DOMContentLoaded", () => {
   setupNavigation();
   loadCurrentTab('dashboard');
 });
+
+function initTheme() {
+  const savedTheme = localStorage.getItem('app-theme') || 'light';
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+  }
+
+  const updateIcons = () => {
+    const isDark = document.body.classList.contains('dark-mode');
+    document.querySelectorAll('.theme-icon').forEach(icon => {
+      icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+    });
+    if (window.lucide) window.lucide.createIcons();
+  };
+
+  updateIcons();
+
+  document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('app-theme', isDark ? 'dark' : 'light');
+      updateIcons();
+    };
+  });
+}
 
 function updateUserUI() {
   const mob = document.getElementById("user-display");
@@ -73,7 +101,6 @@ async function loadCurrentTab(tab) {
   const container = document.getElementById('app-content');
   if (!container) return;
 
-  // НІЯКИХ ЕМОДЖІ! Чистий анімований векторний спінер Lucide
   container.innerHTML = `
     <div class="p-12 text-center text-purple-600 font-bold flex flex-col items-center justify-center gap-3">
       <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-purple-600"></i>
@@ -112,7 +139,7 @@ async function loadCurrentTab(tab) {
     console.error(`Error loading tab ${tab}:`, err);
     container.innerHTML = `
       <div class="glass-card p-6 text-center rounded-3xl space-y-2 border-rose-200">
-        <p class="text-sm font-bold text-rose-500">⚠️ Помилка завантаження розділу "${tab}"</p>
+        <p class="text-sm font-bold text-rose-500">Помилка завантаження розділу "${tab}"</p>
       </div>
     `;
   }
