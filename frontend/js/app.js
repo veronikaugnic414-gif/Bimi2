@@ -18,6 +18,38 @@ window.openUserModal = function() {
   if (modal) modal.classList.remove("hidden");
 };
 
+function initTheme() {
+  const savedTheme = localStorage.getItem("household_theme") || "light";
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+  }
+
+  const updateIcons = () => {
+    const isDark = document.body.classList.contains("dark-mode");
+    const deskIcon = document.getElementById("theme-icon-desktop");
+    const mobIcon = document.getElementById("theme-icon-mobile");
+
+    if (deskIcon) deskIcon.setAttribute("data-lucide", isDark ? "sun" : "moon");
+    if (mobIcon) mobIcon.setAttribute("data-lucide", isDark ? "sun" : "moon");
+
+    if (window.lucide) window.lucide.createIcons();
+  };
+
+  const toggle = () => {
+    document.body.classList.toggle("dark-mode");
+    const isDark = document.body.classList.contains("dark-mode");
+    localStorage.setItem("household_theme", isDark ? "dark" : "light");
+    updateIcons();
+  };
+
+  const deskBtn = document.getElementById("btn-theme-desktop");
+  const mobBtn = document.getElementById("btn-theme-mobile");
+  if (deskBtn) deskBtn.onclick = toggle;
+  if (mobBtn) mobBtn.onclick = toggle;
+
+  updateIcons();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
 
@@ -44,32 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupNavigation();
   loadCurrentTab('dashboard');
 });
-
-function initTheme() {
-  const savedTheme = localStorage.getItem('app-theme') || 'light';
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark-mode');
-  }
-
-  const updateIcons = () => {
-    const isDark = document.body.classList.contains('dark-mode');
-    document.querySelectorAll('.theme-icon').forEach(icon => {
-      icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-    });
-    if (window.lucide) window.lucide.createIcons();
-  };
-
-  updateIcons();
-
-  document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
-    btn.onclick = () => {
-      document.body.classList.toggle('dark-mode');
-      const isDark = document.body.classList.contains('dark-mode');
-      localStorage.setItem('app-theme', isDark ? 'dark' : 'light');
-      updateIcons();
-    };
-  });
-}
 
 function updateUserUI() {
   const mob = document.getElementById("user-display");

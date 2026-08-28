@@ -22,21 +22,21 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="flex flex-col md:flex-row min-h-screen antialiased selection:bg-purple-200">
+<body class="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-purple-100/60 via-fuchsia-50/40 to-pink-100/50 text-gray-800 antialiased selection:bg-purple-200">
 
-  <!-- Контейнер для сповіщень -->
+  <!-- Контейнер для тостів / сповіщень -->
   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
   <!-- МОДАЛКА ВХОДУ -->
   <div id="user-modal" class="fixed inset-0 bg-purple-950/20 backdrop-blur-xl z-50 flex items-center justify-center p-4">
-    <div class="glass-card p-8 w-full max-w-sm text-center shadow-2xl rounded-3xl">
+    <div class="glass-card p-8 w-full max-w-sm text-center shadow-2xl rounded-3xl border border-white/80">
       <div class="w-12 h-12 mx-auto mb-4 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-md text-white">
         <i data-lucide="user-check" class="w-6 h-6"></i>
       </div>
-      <h2 class="text-xl font-semibold mb-1 tracking-tight">Вітаємо!</h2>
-      <p class="text-gray-500 dark:text-gray-400 mb-6 text-xs font-medium">Обери свій профіль для входу</p>
+      <h2 class="text-xl font-semibold mb-1 text-gray-900 tracking-tight">Вітаємо!</h2>
+      <p class="text-gray-500 mb-6 text-xs font-medium">Обери свій профіль для входу</p>
       
       <div class="space-y-2.5">
         <button id="btn-veronika" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 text-sm rounded-2xl shadow-md shadow-purple-200 transition cursor-pointer flex items-center justify-center gap-2">
@@ -50,7 +50,7 @@
   </div>
 
   <!-- БІЧНЕ МЕНЮ ДЛЯ ПК -->
-  <aside class="hidden md:flex flex-col w-72 backdrop-blur-2xl border-r p-6 sticky top-0 h-screen justify-between shadow-xs">
+  <aside class="hidden md:flex flex-col w-72 bg-white/70 backdrop-blur-2xl border-r border-white/80 p-6 sticky top-0 h-screen justify-between shadow-xs">
     <div>
       <div class="flex items-center justify-between mb-8 px-2">
         <div class="flex items-center space-x-3">
@@ -58,55 +58,55 @@
             <img src="/icons/favicon.png" alt="BiMi" class="w-8 h-8 rounded-xl object-cover">
           </div>
           <div>
-            <span class="font-semibold text-lg">BiMi</span>
-            <p class="text-[10px] text-purple-600 dark:text-purple-400 font-semibold uppercase tracking-wider">Household</p>
+            <span class="font-semibold text-lg text-gray-900">BiMi</span>
+            <p class="text-[10px] text-purple-600 font-semibold uppercase tracking-wider">Household Management</p>
           </div>
         </div>
-        <button class="theme-toggle-btn p-2 rounded-2xl bg-purple-100/60 dark:bg-purple-900/30 hover:bg-purple-200/80 transition cursor-pointer text-purple-900 dark:text-purple-300" title="Змінити тему">
-          <i class="theme-icon w-4 h-4" data-lucide="moon"></i>
+        <button id="btn-theme-desktop" class="p-2 rounded-2xl bg-purple-100/60 hover:bg-purple-200/80 transition cursor-pointer text-purple-900" title="Змінити тему">
+          <i id="theme-icon-desktop" data-lucide="moon" class="w-4 h-4"></i>
         </button>
       </div>
 
       <nav class="space-y-1">
-        <button data-tab="dashboard" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-500 dark:text-gray-400 hover:text-purple-600 transition text-sm cursor-pointer">
+        <button data-tab="dashboard" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
           <i data-lucide="layout-dashboard" class="w-4 h-4"></i> <span>Головна</span>
         </button>
-        <button data-tab="calendar" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-500 dark:text-gray-400 hover:text-purple-600 transition text-sm cursor-pointer">
+        <button data-tab="calendar" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
           <i data-lucide="calendar" class="w-4 h-4"></i> <span>Календар</span>
         </button>
-        <button data-tab="menu" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-500 dark:text-gray-400 hover:text-purple-600 transition text-sm cursor-pointer">
+        <button data-tab="menu" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
           <i data-lucide="utensils" class="w-4 h-4"></i> <span>Тижневе меню</span>
         </button>
-        <button data-tab="recipes" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-500 dark:text-gray-400 hover:text-purple-600 transition text-sm cursor-pointer">
+        <button data-tab="recipes" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
           <i data-lucide="book-open" class="w-4 h-4"></i> <span>Рецепти</span>
         </button>
-        <button data-tab="fridge" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-500 dark:text-gray-400 hover:text-purple-600 transition text-sm cursor-pointer">
+        <button data-tab="fridge" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
           <i data-lucide="archive" class="w-4 h-4"></i> <span>Холодильник</span>
         </button>
-        <button data-tab="shopping" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-500 dark:text-gray-400 hover:text-purple-600 transition text-sm cursor-pointer">
+        <button data-tab="shopping" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
           <i data-lucide="shopping-bag" class="w-4 h-4"></i> <span>Покупки</span>
         </button>
-        <button data-tab="finance" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-500 dark:text-gray-400 hover:text-purple-600 transition text-sm cursor-pointer">
+        <button data-tab="finance" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
           <i data-lucide="wallet" class="w-4 h-4"></i> <span>Бюджет</span>
         </button>
       </nav>
     </div>
 
-    <div class="pt-4 border-t border-purple-100/60 dark:border-purple-900/40 flex justify-between items-center px-2">
-      <span id="user-display-desktop" class="font-semibold text-sm">...</span>
-      <button id="btn-change-user-desktop" class="text-xs bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 dark:text-purple-300 border border-purple-200/50 dark:border-purple-800/50 px-3 py-1.5 rounded-xl font-semibold transition cursor-pointer">Змінити</button>
+    <div class="pt-4 border-t border-purple-100/60 flex justify-between items-center px-2">
+      <span id="user-display-desktop" class="font-semibold text-sm text-gray-900">...</span>
+      <button id="btn-change-user-desktop" class="text-xs bg-white hover:bg-purple-50 text-purple-700 border border-purple-100 px-3 py-1.5 rounded-xl font-semibold transition">Змінити</button>
     </div>
   </aside>
 
   <!-- ОСНОВНИЙ КОНТЕНТ -->
   <div class="flex-1 flex flex-col pb-24 md:pb-6">
-    <header class="md:hidden backdrop-blur-xl px-5 py-3.5 sticky top-0 z-30 flex justify-between items-center border-b">
-      <span id="user-display" class="font-semibold text-base">Вітаю!</span>
+    <header class="md:hidden bg-white/80 backdrop-blur-xl px-5 py-3.5 sticky top-0 z-30 flex justify-between items-center border-b border-white/60">
+      <span id="user-display" class="font-semibold text-gray-900 text-base">Вітаю!</span>
       <div class="flex items-center gap-2">
-        <button class="theme-toggle-btn p-2 rounded-xl bg-purple-100/80 dark:bg-purple-900/40 text-purple-900 dark:text-purple-300 transition cursor-pointer" title="Змінити тему">
-          <i class="theme-icon w-3.5 h-3.5" data-lucide="moon"></i>
+        <button id="btn-theme-mobile" class="p-2 rounded-xl bg-purple-100/80 text-purple-900 transition cursor-pointer" title="Змінити тему">
+          <i id="theme-icon-mobile" data-lucide="moon" class="w-3.5 h-3.5"></i>
         </button>
-        <button id="btn-change-user-mobile" class="text-xs bg-purple-100/80 dark:bg-purple-900/40 text-purple-900 dark:text-purple-300 px-3 py-1.5 rounded-xl font-semibold flex items-center gap-1.5 cursor-pointer">
+        <button id="btn-change-user-mobile" class="text-xs bg-purple-100/80 text-purple-900 px-3 py-1.5 rounded-xl font-semibold flex items-center gap-1.5">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Профіль
         </button>
       </div>
@@ -115,8 +115,8 @@
     <main id="app-content" class="p-4 md:p-8 max-w-4xl mx-auto w-full"></main>
   </div>
 
-  <!-- МОБІЛЬНА НАВІГАЦІЯ -->
-  <nav class="md:hidden fixed bottom-3 left-3 right-3 backdrop-blur-2xl border rounded-3xl py-2 px-2 z-40 shadow-xl">
+  <!-- Мобільна панель -->
+  <nav class="md:hidden fixed bottom-3 left-3 right-3 bg-white/90 backdrop-blur-2xl border border-white/90 rounded-3xl py-2 px-2 z-40 shadow-xl">
     <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
       <button data-tab="dashboard" class="nav-btn flex-shrink-0 flex flex-col items-center px-3 py-1 rounded-2xl text-gray-400 cursor-pointer">
         <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span class="text-[10px] font-semibold mt-1 whitespace-nowrap">Головна</span>

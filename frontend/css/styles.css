@@ -1,55 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-:root {
-  --bg-gradient: linear-gradient(135deg, rgba(243, 232, 255, 0.7) 0%, rgba(253, 242, 248, 0.6) 50%, rgba(250, 232, 255, 0.7) 100%);
-  --card-bg: rgba(255, 255, 255, 0.82);
-  --card-border: rgba(255, 255, 255, 0.9);
-  --card-shadow: 0 10px 30px -10px rgba(147, 51, 234, 0.08);
-  --text-main: #1f2937;
-  --text-muted: #6b7280;
-  --sidebar-bg: rgba(255, 255, 255, 0.75);
-}
-
-body.dark-mode {
-  --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #171026 50%, #0f172a 100%);
-  --card-bg: rgba(26, 22, 45, 0.75);
-  --card-border: rgba(168, 85, 247, 0.18);
-  --card-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.5);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --sidebar-bg: rgba(15, 12, 28, 0.85);
-}
-
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   letter-spacing: -0.011em;
-  background: var(--bg-gradient);
-  color: var(--text-main);
-  min-height: 100vh;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+/* Пом'якшення та зменшення агресивності заголовків по всьому інтерфейсу */
 h1, h2, h3, h4, .font-black {
   font-weight: 600 !important;
   letter-spacing: -0.02em;
 }
 
-/* Glassmorphism Cards */
+/* Glassmorphism & Soft Cards */
 .glass-card {
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow);
-  transition: background 0.3s ease, border-color 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 30px -10px rgba(147, 51, 234, 0.05);
 }
 
 .soft-card {
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow);
-  transition: background 0.3s ease, border-color 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 20px -5px rgba(147, 51, 234, 0.03);
 }
 
 /* Градієнтні банери */
@@ -58,7 +34,7 @@ h1, h2, h3, h4, .font-black {
   border-radius: 1.25rem;
 }
 
-/* Custom Select */
+/* Кастомні випадаючі списки Select */
 select, .custom-select {
   appearance: none;
   -webkit-appearance: none;
@@ -71,95 +47,87 @@ select, .custom-select {
   cursor: pointer;
 }
 
-body.dark-mode select,
-body.dark-mode .custom-select {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c084fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
-}
-
-/* Навігація */
+/* Активні кнопки навігації */
 .nav-btn.active {
-  background: rgba(147, 51, 234, 0.12);
-  color: #9333ea !important;
+  background: rgba(147, 51, 234, 0.1);
+  color: #7e22ce !important;
   font-weight: 600;
 }
 
-body.dark-mode .nav-btn.active {
-  background: rgba(168, 85, 247, 0.2);
-  color: #c084fc !important;
-}
-
-/* Календар */
+/* Календарна сітка та індикатори */
 .cal-day {
   aspect-ratio: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 1rem;
-  font-size: 0.85rem;
+  border-radius: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease;
   position: relative;
-  border: 1px solid transparent;
 }
 
 .cal-day:hover:not(.empty) {
   background: rgba(147, 51, 234, 0.08);
-  color: #7e22ce;
-  transform: translateY(-1px);
-}
-
-body.dark-mode .cal-day:hover:not(.empty) {
-  background: rgba(168, 85, 247, 0.15);
-  color: #e9d5ff;
+  color: #6b21a8;
 }
 
 .cal-day.active {
-  background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%) !important;
+  background: #9333ea !important;
   color: #ffffff !important;
-  box-shadow: 0 8px 20px -4px rgba(147, 51, 234, 0.4);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.cal-day.today:not(.active) {
-  border-color: #c084fc;
-  background: rgba(192, 132, 252, 0.1);
+  box-shadow: 0 6px 16px -3px rgba(147, 51, 234, 0.35);
 }
 
 .dots-container {
   display: flex;
-  gap: 3.5px;
+  gap: 3px;
   justify-content: center;
   align-items: center;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 .cal-dot {
-  width: 4.5px;
-  height: 4.5px;
+  width: 4px;
+  height: 4px;
   border-radius: 9999px;
   flex-shrink: 0;
 }
 
-/* Скролбар */
+/* Сховати скролбар для мобільних кнопок */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Адаптація sidebar & header */
-aside, header, nav {
-  background-color: var(--sidebar-bg);
-  border-color: var(--card-border);
+/* 🌙 Темний режим без руйнування відступів та структури */
+body.dark-mode {
+  background: linear-gradient(135deg, #0b0c16 0%, #151329 50%, #0f172a 100%) !important;
+  color: #e2e8f0;
+}
+
+body.dark-mode .glass-card,
+body.dark-mode .soft-card,
+body.dark-mode aside,
+body.dark-mode header,
+body.dark-mode nav {
+  background: rgba(22, 19, 41, 0.85);
+  border-color: rgba(168, 85, 247, 0.2);
+  color: #f8fafc;
 }
 
 body.dark-mode input,
+body.dark-mode select,
 body.dark-mode textarea {
-  background-color: rgba(15, 12, 28, 0.8) !important;
-  border-color: rgba(168, 85, 247, 0.3) !important;
-  color: #f8fafc !important;
+  background-color: rgba(13, 11, 26, 0.9);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #f8fafc;
 }
 
-body.dark-mode input::placeholder,
-body.dark-mode textarea::placeholder {
-  color: #64748b;
+body.dark-mode .cal-day {
+  color: #cbd5e1;
+}
+
+body.dark-mode .cal-day:hover:not(.empty) {
+  background: rgba(168, 85, 247, 0.2);
+  color: #e9d5ff;
 }
