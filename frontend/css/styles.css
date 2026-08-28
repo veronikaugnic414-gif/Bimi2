@@ -3,16 +3,16 @@
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   letter-spacing: -0.011em;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Пом'якшення та зменшення агресивності заголовків по всьому інтерфейсу */
+/* Пом'якшення заголовків */
 h1, h2, h3, h4, .font-black {
   font-weight: 600 !important;
   letter-spacing: -0.02em;
 }
 
-/* Glassmorphism & Soft Cards */
+/* Світла тема: Glassmorphism & Soft Cards */
 .glass-card {
   background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(20px);
@@ -34,7 +34,7 @@ h1, h2, h3, h4, .font-black {
   border-radius: 1.25rem;
 }
 
-/* Кастомні випадаючі списки Select */
+/* Світла тема: Випадаючі списки */
 select, .custom-select {
   appearance: none;
   -webkit-appearance: none;
@@ -47,14 +47,14 @@ select, .custom-select {
   cursor: pointer;
 }
 
-/* Активні кнопки навігації */
+/* Світла тема: Навігація */
 .nav-btn.active {
   background: rgba(147, 51, 234, 0.1);
   color: #7e22ce !important;
   font-weight: 600;
 }
 
-/* Календарна сітка та індикатори */
+/* Світла тема: Календар */
 .cal-day {
   aspect-ratio: 1;
   display: flex;
@@ -65,7 +65,7 @@ select, .custom-select {
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   position: relative;
 }
 
@@ -95,39 +95,98 @@ select, .custom-select {
   flex-shrink: 0;
 }
 
-/* Сховати скролбар для мобільних кнопок */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* 🌙 Темний режим без руйнування відступів та структури */
+/* =========================================================
+   📱 ПРЕМІАЛЬНИЙ DARK MODE (iOS Aesthetic)
+   ========================================================= */
+
+/* 1. Глибокий фон (OLED Black) */
 body.dark-mode {
-  background: linear-gradient(135deg, #0b0c16 0%, #151329 50%, #0f172a 100%) !important;
-  color: #e2e8f0;
+  background: #000000 !important;
+  color: #ffffff !important;
 }
 
+/* 2. Картки, меню та мобільна панель (Apple Surface Color) */
 body.dark-mode .glass-card,
 body.dark-mode .soft-card,
+body.dark-mode .bg-white,
+body.dark-mode .bg-white\/70,
+body.dark-mode .bg-white\/80,
+body.dark-mode .bg-white\/90,
 body.dark-mode aside,
 body.dark-mode header,
 body.dark-mode nav {
-  background: rgba(22, 19, 41, 0.85);
-  border-color: rgba(168, 85, 247, 0.2);
-  color: #f8fafc;
+  background: rgba(28, 28, 30, 0.8) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
 }
 
+/* 3. Примусове перефарбовування Tailwind-тексту */
+body.dark-mode .text-gray-900,
+body.dark-mode .text-gray-800,
+body.dark-mode .text-gray-700 {
+  color: #ffffff !important;
+}
+
+body.dark-mode .text-gray-600,
+body.dark-mode .text-gray-500,
+body.dark-mode .text-gray-400 {
+  color: #98989d !important; /* Фірмовий сірий колір тексту iOS */
+}
+
+body.dark-mode .text-purple-900,
+body.dark-mode .text-purple-800 {
+  color: #e9d5ff !important;
+}
+
+body.dark-mode .text-purple-600,
+body.dark-mode .text-purple-700 {
+  color: #c084fc !important; /* Яскравий неоновий фіолетовий для акцентів */
+}
+
+/* 4. Поля вводу та випадаючі списки */
 body.dark-mode input,
 body.dark-mode select,
 body.dark-mode textarea {
-  background-color: rgba(13, 11, 26, 0.9);
-  border-color: rgba(168, 85, 247, 0.3);
-  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
 }
 
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #98989d !important;
+}
+
+body.dark-mode select, 
+body.dark-mode .custom-select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c084fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
+
+/* 5. Навігація в темній темі */
+body.dark-mode .nav-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+body.dark-mode .nav-btn.active {
+  background: rgba(192, 132, 252, 0.15) !important;
+  color: #c084fc !important;
+}
+
+/* 6. Календар в темній темі */
 body.dark-mode .cal-day {
-  color: #cbd5e1;
+  color: #ffffff;
+  border: 1px solid transparent;
 }
-
 body.dark-mode .cal-day:hover:not(.empty) {
-  background: rgba(168, 85, 247, 0.2);
-  color: #e9d5ff;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+body.dark-mode .cal-day.active {
+  background: #c084fc !important;
+  color: #000000 !important; /* Чорний текст на фіолетовому фоні для контрасту */
+  box-shadow: 0 4px 15px rgba(192, 132, 252, 0.4) !important;
 }
