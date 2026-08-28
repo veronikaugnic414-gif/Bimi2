@@ -75,11 +75,11 @@ export async function renderDashboard(container, currentUser) {
 
         <!-- Спільний Бюджет -->
         <div class="glass-card p-6 rounded-[1.5rem] space-y-4">
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center gap-3">
             <h3 class="font-semibold text-gray-900 text-sm tracking-tight flex items-center gap-2">
               <i data-lucide="wallet" class="w-4 h-4 text-purple-600"></i> Спільний бюджет (11 000 грн)
             </h3>
-            <button id="btn-go-to-finance" class="bg-white hover:bg-gray-50 border border-purple-100 text-purple-700 text-xs px-4 py-2 rounded-full font-bold shadow-sm transition cursor-pointer flex items-center gap-1.5">
+            <button id="btn-go-to-finance" class="bg-[#1A1D2D] hover:bg-[#23273C] border border-white/10 text-purple-300 text-xs px-4 py-2 rounded-full font-bold shadow-sm transition cursor-pointer flex items-center gap-1.5 shrink-0">
               <span>Витрати</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </button>
@@ -113,7 +113,7 @@ export async function renderDashboard(container, currentUser) {
             <h3 class="font-semibold text-gray-900 text-sm tracking-tight flex items-center gap-2">
               <i data-lucide="shopping-bag" class="w-4 h-4 text-purple-600"></i> Покупки на сьогодні
             </h3>
-            <button id="btn-sos" class="bg-rose-500 hover:bg-rose-600 text-white text-[11px] px-3.5 py-1.5 rounded-full font-semibold shadow-md shadow-rose-500/30 cursor-pointer flex items-center gap-1.5 transition">
+            <button id="btn-sos" class="bg-rose-500 hover:bg-rose-600 text-white text-[11px] px-3.5 py-1.5 rounded-full font-semibold shadow-md shadow-rose-500/30 cursor-pointer flex items-center gap-1.5 transition shrink-0">
               <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> Я в магазині
             </button>
           </div>
@@ -230,7 +230,6 @@ export async function renderDashboard(container, currentUser) {
 
       const isDark = document.body.classList.contains('dark-mode');
 
-      // Мінімально видима товщина для дрібних витрат
       const minVisible = totalBudget * 0.04; 
       const vRender = veronikaSpent > 0 ? Math.max(veronikaSpent, minVisible) : 0;
       const dRender = dashaSpent > 0 ? Math.max(dashaSpent, minVisible) : 0;
@@ -247,20 +246,20 @@ export async function renderDashboard(container, currentUser) {
               rRender
             ],
             backgroundColor: [
-              "#C084FC", // Вероніка - красивий бузковий
-              "#F472B6", // Даша - красивий рожевий
-              isDark ? "#24283B" : "#F3E8FF" // Залишок - м'який графітовий
+              "#C084FC", 
+              "#F472B6", 
+              isDark ? "#24283B" : "#F3E8FF" 
             ],
             borderWidth: isDark ? 4 : 3, 
             borderColor: isDark ? "#11131E" : "#ffffff", 
-            borderRadius: 6 // РОБИТЬ КІЛЬЦЕ ОРГАНІЧНИМ (округлі кінці)
+            borderRadius: 6 
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
-          cutout: '72%' // Ідеальна товщина кільця (не затонке, не затовсте)
+          cutout: '72%' 
         }
       });
     }
