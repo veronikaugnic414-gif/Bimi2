@@ -3,7 +3,7 @@
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   letter-spacing: -0.011em;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
 h1, h2, h3, h4, .font-black {
@@ -12,12 +12,11 @@ h1, h2, h3, h4, .font-black {
 }
 
 /* =========================================================
-   🎨 ГЛОБАЛЬНІ ПРАВИЛА (Для обох тем)
+   🔘 ГЛОБАЛЬНЕ ЗАОКРУГЛЕННЯ 
    ========================================================= */
-/* Ідеальне заокруглення всіх інпутів та кнопок */
-input, select, textarea, button {
-  border-radius: 0.85rem !important;
-  outline: none;
+input, select, textarea, button, .list-item {
+  border-radius: 1.25rem !important; 
+  outline: none !important;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -25,13 +24,8 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2) !important;
 }
 
-/* Заокруглення плашок у списках (наприклад, Покупки) */
-ul li, .list-item {
-  border-radius: 1rem !important;
-}
-
 /* =========================================================
-   ☀️ СВІТЛА ТЕМА (Glassmorphism)
+   ☀️ СВІТЛА ТЕМА
    ========================================================= */
 .glass-card {
   background: rgba(255, 255, 255, 0.82);
@@ -50,188 +44,196 @@ ul li, .list-item {
 
 .gradient-banner {
   background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-  border-radius: 1.25rem;
+  border-radius: 1.5rem !important;
 }
 
-/* Світла тема: Поля вводу */
 input, select, textarea {
   border: 1px solid rgba(147, 51, 234, 0.15);
   background: rgba(255, 255, 255, 0.9);
+  padding: 0.75rem 1.25rem !important;
 }
 
 select, .custom-select {
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237e22ce' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 1rem center;
+  background-position: right 1.25rem center;
   background-size: 1rem;
-  padding-right: 2.5rem !important;
+  padding-right: 3rem !important;
   cursor: pointer;
 }
 
+/* =========================================================
+   🌌 ТЕМНА ТЕМА (High Contrast Neon Aesthetic)
+   ========================================================= */
+
+body.dark-mode {
+  background-color: #0B0D17 !important;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(147, 51, 234, 0.05), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.05), transparent 25%) !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode aside,
+body.dark-mode header,
+body.dark-mode nav {
+  background: rgba(16, 18, 27, 0.7) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.dark-mode .glass-card,
+body.dark-mode .soft-card {
+  background: #151724 !important; 
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.8) !important;
+  border-radius: 1.5rem !important; 
+}
+
+body.dark-mode .bg-white,
+body.dark-mode .bg-gray-50,
+body.dark-mode .dash-user-card {
+  background: rgba(255, 255, 255, 0.05) !important; 
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 1.25rem !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+  padding: 0.75rem 1.25rem !important;
+}
+body.dark-mode input:focus, body.dark-mode select:focus {
+  background: #252838 !important;
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2) !important;
+}
+body.dark-mode input::placeholder { color: #64748B !important; }
+body.dark-mode select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
+
+/* =========================================================
+   ✨ ПРИМУСОВИЙ НЕОН (Тексти Вероніка/Даша/Залишок)
+   ========================================================= */
+body.dark-mode .dash-v-name,
+body.dark-mode .dash-v-amount {
+  color: #D8B4FE !important;
+  text-shadow: 0 0 12px rgba(216, 180, 254, 0.4) !important;
+}
+body.dark-mode .dash-d-name,
+body.dark-mode .dash-d-amount {
+  color: #F9A8D4 !important;
+  text-shadow: 0 0 12px rgba(249, 168, 212, 0.4) !important;
+}
+body.dark-mode .dash-r-name,
+body.dark-mode .dash-r-amount {
+  color: #F8FAFC !important;
+  text-shadow: none !important;
+}
+
+body.dark-mode [class*="text-gray-900"],
+body.dark-mode [class*="text-gray-800"] { color: #F8FAFC !important; }
+
+body.dark-mode [class*="text-gray-700"],
+body.dark-mode [class*="text-gray-600"],
+body.dark-mode [class*="text-gray-500"] { color: #94A3B8 !important; }
+
+/* =========================================================
+   📱 БОКОВА ПАНЕЛЬ (Nav Buttons) - Ідеальна чистота
+   ========================================================= */
+body.dark-mode aside .nav-btn,
+body.dark-mode nav .nav-btn {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+  color: #8E8E93 !important; 
+}
+body.dark-mode aside .nav-btn:hover,
+body.dark-mode nav .nav-btn:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #F8FAFC !important;
+}
+body.dark-mode aside .nav-btn.active,
+body.dark-mode nav .nav-btn.active {
+  background: rgba(168, 85, 247, 0.15) !important;
+  color: #D8B4FE !important; 
+  border: 1px solid rgba(168, 85, 247, 0.25) !important;
+}
 .nav-btn.active {
   background: rgba(147, 51, 234, 0.1);
   color: #7e22ce !important;
   font-weight: 600;
 }
 
+/* =========================================================
+   🔘 КНОПКИ (Neon Glow)
+   ========================================================= */
+body.dark-mode button.bg-purple-600,
+body.dark-mode button[class*="bg-purple-500"] {
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%) !important;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+body.dark-mode button.bg-pink-500,
+body.dark-mode button.bg-rose-500 {
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%) !important;
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.35) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+body.dark-mode button.bg-white,
+body.dark-mode button[class*="bg-gray-50"] {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(255,255,255, 0.15) !important;
+}
+body.dark-mode button.bg-white:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* =========================================================
+   📅 КАЛЕНДАР
+   ========================================================= */
 .cal-day {
   aspect-ratio: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 0.85rem;
+  border-radius: 1rem !important;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
 }
-
-.cal-day:hover:not(.empty) {
-  background: rgba(147, 51, 234, 0.08);
-  color: #6b21a8;
-}
-
-.cal-day.active {
-  background: #9333ea !important;
-  color: #ffffff !important;
-  box-shadow: 0 6px 16px -3px rgba(147, 51, 234, 0.35);
-}
-
-.dots-container {
-  display: flex;
-  gap: 3px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2px;
-}
-
-.cal-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 9999px;
-  flex-shrink: 0;
-}
-
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* =========================================================
-   🌙 ТЕМНА ТЕМА (iOS / Apple Aesthetic)
-   ========================================================= */
-
-/* 1. Глибокий фон (OLED Black) */
-body.dark-mode {
-  background: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* 2. Бокова панель, мобільне меню та хедер (Напівпрозорий Apple Blur) */
-body.dark-mode aside,
-body.dark-mode header,
-body.dark-mode nav {
-  background: rgba(28, 28, 30, 0.8) !important;
-  backdrop-filter: blur(30px) !important;
-  -webkit-backdrop-filter: blur(30px) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* 3. Головні зовнішні картки (Level 1 Surface) */
-body.dark-mode .glass-card,
-body.dark-mode .soft-card {
-  background: #1c1c1e !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.8) !important;
-  border-radius: 1.5rem !important; 
-}
-
-/* 4. Внутрішні "білі" картки - Меню, Баланс та Покупки */
-body.dark-mode [class*="bg-white"],
-body.dark-mode [class*="bg-purple-50"],
-body.dark-mode [class*="bg-pink-50"],
-body.dark-mode [class*="bg-gray-50"] {
-  background: #2c2c2e !important; 
-  border-color: rgba(255, 255, 255, 0.05) !important;
-  border-radius: 1rem !important; 
-  color: #ffffff !important;
-}
-
-/* 5. Поля вводу (Shopping) - Темна тема */
-body.dark-mode input,
-body.dark-mode select,
-body.dark-mode textarea {
-  background: #3a3a3c !important; 
-  border: 1px solid transparent !important;
-  color: #ffffff !important;
-}
-
-body.dark-mode input:focus,
-body.dark-mode select:focus {
-  border-color: #a855f7 !important;
-  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.3) !important;
-}
-
-body.dark-mode input::placeholder,
-body.dark-mode textarea::placeholder {
-  color: #8e8e93 !important;
-}
-
-/* Випадаючий список - Темна тема */
-body.dark-mode select, 
-body.dark-mode .custom-select {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c084fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
-}
-
-/* 6. Тексти */
-body.dark-mode [class*="text-gray-900"],
-body.dark-mode [class*="text-gray-800"] {
-  color: #ffffff !important;
-}
-body.dark-mode [class*="text-gray-700"],
-body.dark-mode [class*="text-gray-600"],
-body.dark-mode [class*="text-gray-500"],
-body.dark-mode [class*="text-gray-400"] {
-  color: #8e8e93 !important;
-}
-body.dark-mode [class*="text-purple-900"],
-body.dark-mode [class*="text-purple-800"] {
-  color: #e9d5ff !important;
-}
-body.dark-mode [class*="text-purple-600"] {
-  color: #c084fc !important;
-}
-
-/* 7. Навігація в темній темі */
-body.dark-mode .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-body.dark-mode .nav-btn.active {
-  background: rgba(192, 132, 252, 0.15) !important;
-  color: #c084fc !important;
-}
-
-/* 8. Календар */
 body.dark-mode .cal-day {
   color: #ffffff;
   background: transparent;
-  border-radius: 0.75rem !important;
 }
 body.dark-mode .cal-day:hover:not(.empty) {
-  background: #3a3a3c !important;
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 body.dark-mode .cal-day.active {
-  background: #a855f7 !important;
-  color: #ffffff !important;
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%) !important;
   box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+body.dark-mode .cal-day.today:not(.active) {
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  background: rgba(168, 85, 247, 0.1);
 }
 
-/* 9. Уніфікація круглих кнопок */
-button.rounded-full {
-  border-radius: 9999px !important;
-}
+.dots-container { display: flex; gap: 3px; justify-content: center; align-items: center; margin-top: 2px; }
+.cal-dot { width: 4px; height: 4px; border-radius: 9999px; flex-shrink: 0; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+button.rounded-full, .w-8.h-8 { border-radius: 9999px !important; }
