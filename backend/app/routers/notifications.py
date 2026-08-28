@@ -1,5 +1,7 @@
 import os
-import requests
+import json
+import urllib.request
+import urllib.error
 from fastapi import APIRouter, HTTPException
 from app.database import supabase
 
@@ -42,14 +44,23 @@ def notify_in_store(user_id: int):
     }
 
     try:
-        tg_res = requests.post(url, json=payload, timeout=10)
-        res_data = tg_res.json()
-
-        if not res_data.get("ok"):
-            print("Telegram API Error:", res_data)
-            raise HTTPException(status_code=400, detail=res_data.get("description", "Помилка Telegram API"))
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url, 
+            data=data, 
+            headers={"Content-Type": "application/json"}
+        )
+        
+        with urllib.request.urlopen(req, timeout=10) as response:
+            res_data = json.loads(response.read().decode("utf-8"))
+            if not res_data.get("ok"):
+                raise HTTPException(status_code=400, detail="Помилка Telegram API")
 
         return {"status": "ok", "message": "Сповіщення успішно надіслано в Telegram"}
+    except urllib.error.HTTPError as e:
+        err_msg = e.read().decode("utf-8")
+        print("Telegram HTTP Error:", err_msg)
+        raise HTTPException(status_code=400, detail=f"Telegram Error: {err_msg}")
     except Exception as err:
         print("Network error Telegram:", err)
         raise HTTPException(status_code=500, detail=str(err))
