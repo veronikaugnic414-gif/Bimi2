@@ -9,7 +9,8 @@ from app.routers import (
     menu,
     recipes,
     fridge,
-    dashboard
+    dashboard,
+    notifications
 )
 
 app = FastAPI(
@@ -36,6 +37,7 @@ app.include_router(menu.router)
 app.include_router(recipes.router)
 app.include_router(fridge.router)
 app.include_router(dashboard.router)
+app.include_router(notifications.router)
 
 @app.on_event("startup")
 def startup_event():
