@@ -8,112 +8,111 @@ export async function renderRecipes(container) {
     const recipes = await api.getRecipes();
 
     container.innerHTML = `
-      <section class="card" style="margin-bottom: 16px;">
-        <div class="card-header" style="margin-bottom: 0;">
+      <div class="space-y-6">
+        <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-section-title">Книга рецептів</h2>
-            <p class="text-secondary">Улюблені домашні страви</p>
+            <h2 class="text-2xl font-black text-gray-900 tracking-tight">Книга Рецептів</h2>
+            <p class="text-xs text-purple-600 font-bold">Ваші улюблені страви</p>
           </div>
-          <button id="btn-open-recipe-modal" class="btn btn-primary btn-sm" type="button">
-            <i data-lucide="plus" class="icon-sm"></i>
-            <span>Новий рецепт</span>
+          <button id="btn-open-recipe-modal" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xs px-4 py-2.5 rounded-2xl shadow-md transition cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="plus" class="w-4 h-4"></i> Новий рецепт
           </button>
         </div>
-      </section>
 
-      <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-        ${recipes.length ? recipes.map(r => `
-          <div class="card" style="padding: 14px; margin-bottom: 0;">
-            ${r.photo_url ? `
-              <div style="width: 100%; height: 140px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 12px;">
-                <img src="${r.photo_url}" style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${recipes.length ? recipes.map(r => `
+            <div class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between border border-purple-100/60 shadow-xs">
+              <div>
+                ${r.photo_url ? `
+                  <div class="w-full h-44 overflow-hidden relative">
+                    <img src="${r.photo_url}" class="w-full h-full object-cover">
+                  </div>
+                ` : `
+                  <div class="w-full h-36 bg-purple-100/40 flex items-center justify-center text-purple-400">
+                    <i data-lucide="utensils" class="w-8 h-8 opacity-60"></i>
+                  </div>
+                `}
+
+                <div class="p-5 space-y-3">
+                  <div class="flex justify-between items-start gap-2">
+                    <h3 class="font-black text-sm text-gray-900 leading-tight break-all max-w-[70%]">${r.title}</h3>
+                    <span class="text-[10px] font-bold px-2.5 py-1 bg-purple-100/80 text-purple-800 rounded-xl whitespace-nowrap flex items-center gap-1 shrink-0">
+                      <i data-lucide="clock" class="w-3 h-3"></i> ${r.cooking_time || 20} хв
+                    </span>
+                  </div>
+
+                  <!-- Обрізка безнадійного довгого тексту без виліту за межі -->
+                  <p class="text-xs text-gray-500 font-medium line-clamp-2 break-all max-w-full leading-relaxed">${r.instructions || 'Без інструкції'}</p>
+
+                  ${(r.ingredients && r.ingredients.length) ? `
+                    <div class="pt-1">
+                      <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Інгредієнти:</p>
+                      <div class="flex flex-wrap gap-1">
+                        ${r.ingredients.map(i => `
+                          <span class="text-[10px] bg-white/90 border border-purple-100 text-purple-900 px-2.5 py-0.5 rounded-xl font-bold shadow-2xs">
+                            ${i.name || i} ${i.amount ? `(${i.amount})` : ''}
+                          </span>
+                        `).join('')}
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
               </div>
-            ` : ''}
 
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-              <h3 class="text-card-title" style="font-size: 15px;">${r.title}</h3>
-              <span class="badge" style="display: inline-flex; align-items: center; gap: 4px; font-size: 10px;">
-                <i data-lucide="clock" class="icon-sm"></i>
-                <span>${r.cooking_time || 20} хв</span>
-              </span>
-            </div>
-
-            <p class="text-secondary" style="margin-top: 6px; font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${r.instructions || 'Без інструкції'}</p>
-
-            ${(r.ingredients && r.ingredients.length) ? `
-              <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px;">
-                ${r.ingredients.map(i => `
-                  <span class="badge" style="background: var(--surface-elevated); border: 1px solid var(--border); color: var(--text-secondary); font-size: 10px;">
-                    ${i.name || i} ${i.amount ? `(${i.amount})` : ''}
-                  </span>
-                `).join('')}
+              <div class="p-5 pt-0 flex justify-between items-center border-t border-purple-100/40 mt-3">
+                <button data-id="${r.id}" class="btn-view-recipe text-xs font-bold text-purple-700 hover:text-purple-900 flex items-center gap-1.5 cursor-pointer py-1">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i> Детальніше
+                </button>
+                <button data-id="${r.id}" class="btn-delete-recipe text-rose-400 hover:text-rose-600 text-xs font-bold cursor-pointer p-1">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
               </div>
-            ` : ''}
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border);">
-              <button data-id="${r.id}" class="btn-view-recipe btn btn-secondary btn-sm" type="button">
-                <i data-lucide="eye" class="icon-sm"></i>
-                <span>Детальніше</span>
-              </button>
-              <button data-id="${r.id}" class="btn-delete-recipe btn-ghost btn-sm" style="padding: 4px;" type="button" aria-label="Видалити">
-                <i data-lucide="trash-2" class="icon-sm" style="color: var(--danger);"></i>
-              </button>
             </div>
-          </div>
-        `).join('') : `
-          <div class="empty-state card">
-            <div class="empty-state-icon"><i data-lucide="book-open" class="icon-md"></i></div>
-            <p class="text-card-title" style="font-size: 15px; margin-bottom: 4px;">Рецептів поки немає</p>
-            <p class="text-secondary">Додай перший рецепт своєї улюбленої страви.</p>
-          </div>
-        `}
-      </div>
-
-      <!-- Детальний перегляд рецепту (Bottom Sheet) -->
-      <div id="recipe-view-modal" class="modal-backdrop hidden" role="dialog">
-        <div class="bottom-sheet">
-          <div class="sheet-indicator"></div>
-          <div class="card-header">
-            <div>
-              <h3 id="recipe-modal-title" class="text-card-title"></h3>
-              <span id="recipe-modal-time" class="badge" style="margin-top: 4px; display: inline-block;"></span>
-            </div>
-            <button id="btn-close-recipe-view" class="btn-ghost btn-sm" type="button">Закрити</button>
-          </div>
-
-          <div style="margin-top: 12px;">
-            <div class="text-muted" style="font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Інструкція:</div>
-            <p id="recipe-modal-text" class="text-body" style="font-size: 14px; background: var(--surface-elevated); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border); white-space: pre-wrap; line-height: 1.5;"></p>
-          </div>
+          `).join('') : '<p class="text-xs text-gray-400 font-medium text-center py-8 col-span-2">Рецептів поки немає</p>'}
         </div>
       </div>
 
-      <!-- Створення рецепту (Bottom Sheet) -->
-      <div id="recipe-modal" class="modal-backdrop hidden" role="dialog">
-        <div class="bottom-sheet">
-          <div class="sheet-indicator"></div>
-          <div class="card-header">
-            <h3 class="text-card-title">Новий рецепт</h3>
-            <button id="btn-close-rec" class="btn-ghost btn-sm" type="button">Закрити</button>
+      <!-- МОДАЛКА ПОВНОГО ТЕКСТУ РЕЦЕПТА -->
+      <div id="recipe-view-modal" class="hidden fixed inset-0 bg-purple-950/20 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+        <div class="glass-card p-6 w-full max-w-md rounded-3xl space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl border border-white/80">
+          <div class="flex justify-between items-start">
+            <h3 id="recipe-modal-title" class="font-black text-lg text-gray-900 break-all max-w-[80%]"></h3>
+            <span id="recipe-modal-time" class="text-xs font-bold px-2.5 py-1 bg-purple-100 text-purple-800 rounded-xl"></span>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <input type="text" id="rec-title" placeholder="Назва страви..." class="input-field">
-            <input type="number" id="rec-time" placeholder="Час приготування (хв)" value="20" class="input-field">
+          <div>
+            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Інструкція приготування:</h4>
+            <p id="recipe-modal-text" class="text-xs text-gray-700 font-medium leading-relaxed whitespace-pre-wrap break-all bg-white/60 p-3.5 rounded-2xl border border-purple-100/60"></p>
+          </div>
+
+          <button id="btn-close-recipe-view" class="w-full py-2.5 bg-gray-100 text-gray-700 font-bold text-xs rounded-2xl cursor-pointer">Закрити</button>
+        </div>
+      </div>
+
+      <!-- МОДАЛКА СТВОРЕННЯ -->
+      <div id="recipe-modal" class="hidden fixed inset-0 bg-purple-950/20 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+        <div class="glass-card p-6 w-full max-w-md space-y-4 rounded-3xl max-h-[90vh] overflow-y-auto shadow-2xl">
+          <h3 class="font-black text-lg text-gray-900 flex items-center gap-2">
+            <i data-lucide="chef-hat" class="w-5 h-5 text-purple-600"></i> Новий рецепт
+          </h3>
+          
+          <div class="space-y-3">
+            <input type="text" id="rec-title" placeholder="Назва страви..." class="w-full bg-white/80 border border-purple-100 rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <input type="number" id="rec-time" placeholder="Час приготування (хв)" value="20" class="w-full bg-white/80 border border-purple-100 rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400">
             
             <div>
-              <label class="text-secondary" style="font-size: 12px; margin-bottom: 4px; display: block;">Фото страви:</label>
-              <input type="file" id="rec-file-input" accept="image/*" class="input-field" style="padding-top: 8px;">
+              <label class="block text-xs font-bold text-gray-700 mb-1">Фото страви (з ПК):</label>
+              <input type="file" id="rec-file-input" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-purple-800 cursor-pointer">
             </div>
 
-            <textarea id="rec-inst" placeholder="Інструкція приготування..." class="input-field"></textarea>
-
-            <div style="border-top: 1px solid var(--border); padding-top: 10px; margin-top: 4px;">
-              <label class="text-secondary" style="font-size: 12px; margin-bottom: 6px; display: block;">Додати інгредієнт:</label>
-              <div class="input-group">
-                <input type="text" id="ing-name" placeholder="Назва" class="input-field" style="flex: 2;">
-                <input type="number" id="ing-qty" placeholder="К-сть" class="input-field" style="flex: 1;">
-                <select id="ing-unit" class="select-field" style="flex: 1;">
+            <textarea id="rec-inst" placeholder="Інструкція приготування..." class="w-full bg-white/80 border border-purple-100 rounded-2xl px-4 py-2.5 text-xs font-medium h-20 focus:outline-none focus:ring-2 focus:ring-purple-400"></textarea>
+            
+            <div class="border-t border-purple-100/60 pt-3 space-y-2">
+              <label class="block text-xs font-bold text-gray-800">Додати інгредієнт:</label>
+              <div class="flex gap-2">
+                <input type="text" id="ing-name" placeholder="Назва" class="w-1/2 bg-white/80 border border-purple-100 rounded-2xl px-3 py-2 text-xs font-semibold">
+                <input type="number" id="ing-qty" placeholder="К-сть" class="w-1/4 bg-white/80 border border-purple-100 rounded-2xl px-2 py-2 text-xs font-semibold">
+                <select id="ing-unit" class="w-1/4 bg-white/80 border border-purple-100 rounded-2xl px-1 py-2 text-xs font-bold text-purple-900">
                   <option value="г">г</option>
                   <option value="кг">кг</option>
                   <option value="шт">шт</option>
@@ -121,11 +120,15 @@ export async function renderRecipes(container) {
                   <option value="л">л</option>
                 </select>
               </div>
-              <button type="button" id="btn-add-ing-row" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 8px;">+ Додати інгредієнт</button>
-              <div id="ing-list-preview" style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;"></div>
+              <button type="button" id="btn-add-ing-row" class="w-full bg-purple-100/80 text-purple-900 py-2 rounded-2xl text-xs font-bold flex items-center justify-center gap-1">+ Додати інгредієнт</button>
+              
+              <div id="ing-list-preview" class="flex flex-wrap gap-1 pt-1"></div>
             </div>
+          </div>
 
-            <button id="btn-save-rec" class="btn btn-primary" style="margin-top: 8px;" type="button">Зберегти рецепт</button>
+          <div class="flex justify-end gap-2 pt-3 border-t border-purple-100/60">
+            <button id="btn-close-rec" class="px-4 py-2.5 text-xs font-bold text-gray-500 cursor-pointer">Скасувати</button>
+            <button id="btn-save-rec" class="bg-purple-600 text-white font-bold px-5 py-2.5 text-xs rounded-2xl shadow-md cursor-pointer">Зберегти рецепт</button>
           </div>
         </div>
       </div>
@@ -181,7 +184,7 @@ export async function renderRecipes(container) {
         document.getElementById('ing-qty').value = '';
         
         document.getElementById('ing-list-preview').innerHTML = tempIngredients.map(i => 
-          `<span class="badge" style="background: var(--surface-hover);">${i.name} (${i.amount})</span>`
+          `<span class="text-[10px] bg-purple-100 text-purple-900 px-2.5 py-1 rounded-xl font-bold">${i.name} (${i.amount})</span>`
         ).join('');
       }
     };
