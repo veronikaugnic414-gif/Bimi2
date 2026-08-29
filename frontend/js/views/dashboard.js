@@ -79,7 +79,7 @@ export async function renderDashboard(container, currentUser) {
             <h3 class="font-semibold text-gray-900 text-sm tracking-tight flex items-center gap-2">
               <i data-lucide="wallet" class="w-4 h-4 text-purple-600"></i> Спільний бюджет (11 000 грн)
             </h3>
-            <button id="btn-go-to-finance" class="bg-[#1A1D2D] hover:bg-[#23273C] border border-white/10 text-purple-300 text-xs px-4 py-2 rounded-full font-bold shadow-sm transition cursor-pointer flex items-center gap-1.5 shrink-0">
+            <button id="btn-go-to-finance" class="bg-purple-100/80 hover:bg-purple-200/80 border border-purple-200 text-purple-900 text-xs px-3.5 py-1.5 rounded-full font-bold shadow-xs transition cursor-pointer flex items-center gap-1.5 shrink-0">
               <span>Витрати</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </button>

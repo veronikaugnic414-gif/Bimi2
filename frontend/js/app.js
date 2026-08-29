@@ -1,4 +1,5 @@
 let currentUser = { id: 1, name: "Вероніка" };
+let currentActiveTab = 'dashboard';
 
 window.selectUser = function(id, name) {
   currentUser = { id, name };
@@ -40,6 +41,8 @@ function initTheme() {
     const isDark = document.body.classList.contains("dark-mode");
     localStorage.setItem("household_theme", isDark ? "dark" : "light");
     updateIcons();
+    // Перемальовуємо активну вкладку, щоб оновити кольори графіка під нову тему
+    loadCurrentTab(currentActiveTab);
   };
 
   const deskBtn = document.getElementById("btn-theme-desktop");
@@ -90,6 +93,7 @@ function setupNavigation() {
     btn.onclick = (e) => {
       e.preventDefault();
       const tab = btn.dataset.tab;
+      currentActiveTab = tab;
       
       document.querySelectorAll('.nav-btn').forEach(b => {
         b.classList.remove('active', 'text-purple-600', 'bg-purple-100/50');
@@ -104,6 +108,7 @@ function setupNavigation() {
 }
 
 async function loadCurrentTab(tab) {
+  currentActiveTab = tab;
   const container = document.getElementById('app-content');
   if (!container) return;
 
