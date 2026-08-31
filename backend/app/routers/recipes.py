@@ -89,26 +89,28 @@ def generate_shopping_list():
         for r_id in recipe_ids:
             recipe_counts[r_id] += 1
 
-        # Зчитуємо холодильник
-        fridge_res = supabase.table("fridge_items").select("item_name, amount").execute()
+        # Безпечне зчитування холодильника (підтримує amount, quantity або дефолт 1 шт)
+        fridge_res = supabase.table("fridge_items").select("*").execute()
         fridge_stock = defaultdict(float)
 
         for f in (fridge_res.data or []):
             f_name = re.sub(r'\s+', ' ', str(f.get("item_name", ""))).strip().lower()
             if not f_name:
                 continue
-            qty, unit = parse_amount(f.get("amount", "1 шт"))
+            raw_val = f.get("amount") or f.get("quantity") or "1 шт"
+            qty, unit = parse_amount(raw_val)
             fridge_stock[(f_name, unit)] += qty
 
-        # Зчитуємо вже наявні покупки
-        shop_res = supabase.table("shopping_list").select("item_name, amount, is_crossed_out").eq("is_crossed_out", False).execute()
+        # Зчитуємо вже наявні незакреслені покупки
+        shop_res = supabase.table("shopping_list").select("*").eq("is_crossed_out", False).execute()
         existing_shop = defaultdict(float)
         for s in (shop_res.data or []):
             s_name = re.sub(r'\s+', ' ', str(s.get("item_name", ""))).strip().lower()
-            qty, unit = parse_amount(s.get("amount", "1 шт"))
+            raw_val = s.get("amount") or s.get("quantity") or "1 шт"
+            qty, unit = parse_amount(raw_val)
             existing_shop[(s_name, unit)] += qty
 
-        # Безпечне отримання рецептів (працює навіть якщо ID лише 1)
+        # Безпечне отримання рецептів
         unique_ids = list(recipe_counts.keys())
         recipes_res = supabase.table("recipes").select("id, ingredients").in_("id", unique_ids).execute()
         
@@ -160,7 +162,6 @@ def generate_shopping_list():
         if not items_to_insert:
             return {"status": "info", "message": "Усі необхідні інгредієнти вже є в холодильнику або в списку покупок!"}
 
-        # Вставка за один запит
         supabase.table("shopping_list").insert(items_to_insert).execute()
 
         return {"status": "success", "message": f"До списку покупок додано {len(items_to_insert)} позицій!"}
