@@ -121,6 +121,9 @@ export const api = {
             body: JSON.stringify(data)
         }).then(res => res.json()),
 
+    clearShoppingList: () => 
+        fetch(`${API_BASE_URL}/shopping/clear`, { method: 'DELETE' }).then(res => res.json()),
+
     toggleShoppingItem: (itemId) => 
         fetch(`${API_BASE_URL}/shopping/${itemId}/toggle`, { method: 'PATCH' }).then(res => res.json()),
 

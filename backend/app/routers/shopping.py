@@ -8,15 +8,23 @@ class ShoppingItemCreate(BaseModel):
 
 router = APIRouter(prefix="/shopping", tags=["Shopping List"])
 
+@router.get("")
 @router.get("/")
 def get_shopping_list():
     res = supabase.table("shopping_list").select("*").order("id").execute()
     return res.data or []
 
+@router.post("")
 @router.post("/")
 def add_shopping_item(item: ShoppingItemCreate):
     res = supabase.table("shopping_list").insert({"item_name": item.item_name, "amount": item.amount, "is_crossed_out": False}).execute()
     return {"message": "Товар додано до списку", "data": res.data}
+
+@router.delete("/clear")
+def clear_shopping_list():
+    """Повне очищення списку покупок"""
+    supabase.table("shopping_list").delete().neq("id", 0).execute()
+    return {"message": "Список покупок успішно очищено!"}
 
 @router.patch("/{item_id}/toggle")
 def toggle_shopping_item(item_id: int):
