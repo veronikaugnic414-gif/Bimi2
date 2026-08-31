@@ -128,6 +128,8 @@ export async function renderDashboard(container, currentUser) {
                 <option value="кг">кг</option>
                 <option value="мл">мл</option>
                 <option value="л">л</option>
+                <option value="ст. л.">ст. л.</option>
+                <option value="ч. л.">ч. л.</option>
                 <option value="упаковка">уп</option>
               </select>
               <button id="btn-dash-add-shop" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-xs font-bold rounded-full shadow-md cursor-pointer transition">+</button>

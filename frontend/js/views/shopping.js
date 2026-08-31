@@ -20,6 +20,8 @@ export async function renderShopping(container) {
             <option value="кг">кг</option>
             <option value="мл">мл</option>
             <option value="л">л</option>
+            <option value="ст. л.">ст. л.</option>
+            <option value="ч. л.">ч. л.</option>
             <option value="уп">упаковка</option>
           </select>
 

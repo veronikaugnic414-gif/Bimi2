@@ -118,6 +118,8 @@ export async function renderRecipes(container) {
                   <option value="шт">шт</option>
                   <option value="мл">мл</option>
                   <option value="л">л</option>
+                  <option value="ст. л.">ст. л.</option>
+                  <option value="ч. л.">ч. л.</option>
                 </select>
               </div>
               <button type="button" id="btn-add-ing-row" class="w-full bg-purple-100/80 text-purple-900 py-2 rounded-2xl text-xs font-bold flex items-center justify-center gap-1">+ Додати інгредієнт</button>
