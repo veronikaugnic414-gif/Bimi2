@@ -142,5 +142,32 @@ export const api = {
         }).then(res => res.json()),
 
     resetExpenses: () => 
-        fetch(`${API_BASE_URL}/finance/reset`, { method: 'DELETE' }).then(res => res.json())
+        fetch(`${API_BASE_URL}/finance/reset`, { method: 'DELETE' }).then(res => res.json()),
+
+    // --- 🏆 ПОІНТИ ТА ОБОВ'ЯЗКИ ---
+    getPointsSummary: (userId) => 
+        fetch(`${API_BASE_URL}/points/summary?current_user_id=${userId}`).then(res => res.json()),
+
+    getDutyTasks: () => 
+        fetch(`${API_BASE_URL}/points/tasks`).then(res => res.json()),
+
+    createDutyTask: (data) => 
+        fetch(`${API_BASE_URL}/points/tasks`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(res => res.json()),
+
+    deleteDutyTask: (taskId) => 
+        fetch(`${API_BASE_URL}/points/tasks/${taskId}`, { method: 'DELETE' }).then(res => res.json()),
+
+    logDutyTask: (data) => 
+        fetch(`${API_BASE_URL}/points/log`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(res => res.json()),
+
+    deleteDutyLog: (logId) => 
+        fetch(`${API_BASE_URL}/points/log/${logId}`, { method: 'DELETE' }).then(res => res.json())
 };
