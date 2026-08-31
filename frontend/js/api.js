@@ -83,6 +83,13 @@ export const api = {
             body: JSON.stringify(data)
         }).then(res => res.json()),
 
+    updateRecipe: (id, data) => 
+        fetch(`${API_BASE_URL}/recipes/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(res => res.json()),
+
     deleteRecipe: (id) => 
         fetch(`${API_BASE_URL}/recipes/${id}`, { method: 'DELETE' }).then(res => res.json()),
 
