@@ -42,27 +42,44 @@ def delete_recipe(recipe_id: int):
 
 @router.post("/generate-shopping-list")
 def generate_shopping_list():
-    """Генерація покупок з урахуванням кількості повторень рецептів та холодильника"""
+    """Генерація покупок із точним відніманням наявної кількості в холодильнику"""
     menu_res = supabase.table("weekly_menu").select("recipe_id").execute()
     recipe_ids = [m["recipe_id"] for m in (menu_res.data or []) if m.get("recipe_id")]
     
     if not recipe_ids:
         return {"message": "Тижневе меню порожнє!"}
 
-    # Підраховуємо, скільки разів кожен рецепт зустрічається в меню
+    # Підраховуємо кількість повторень кожного рецепта в меню
     recipe_counts = defaultdict(int)
     for r_id in recipe_ids:
         recipe_counts[r_id] += 1
 
-    # Продукти в холодильнику: нормалізуємо (маленькі літери, без зайвих пробілів)
+    # 1. Зчитуємо запаси холодильника: (normalized_name, unit) -> total_available_qty
     fridge_res = supabase.table("fridge_items").select("item_name, amount").execute()
-    fridge_names = {re.sub(r'\s+', ' ', f["item_name"]).strip().lower() for f in (fridge_res.data or [])}
+    fridge_stock = defaultdict(float)
 
-    # Отримуємо рецепти з меню
+    for f in (fridge_res.data or []):
+        f_name = re.sub(r'\s+', ' ', str(f.get("item_name", ""))).strip().lower()
+        if not f_name:
+            continue
+            
+        f_amount = str(f.get("amount", "1 шт")).strip()
+        match = re.match(r"([\d\.,]+)\s*(.*)", f_amount)
+        if match:
+            try:
+                val = float(match.group(1).replace(',', '.'))
+            except ValueError:
+                val = 1.0
+            unit = match.group(2).strip() or "шт"
+        else:
+            val = 1.0
+            unit = "шт"
+            
+        fridge_stock[(f_name, unit)] += val
+
+    # 2. Зчитуємо рецепти з меню та сумуємо потрібні інгредієнти
     recipes_res = supabase.table("recipes").select("id, ingredients").in_("id", list(recipe_counts.keys())).execute()
-    
-    # Словник для підсумовування: (normalized_name, unit) -> float
-    aggregated_ingredients = defaultdict(float)
+    required_ingredients = defaultdict(float)
     display_names = {}
 
     for r in (recipes_res.data or []):
@@ -74,20 +91,13 @@ def generate_shopping_list():
             ing_name = ing.get("name") if isinstance(ing, dict) else str(ing)
             raw_amount = ing.get("amount", "1 шт") if isinstance(ing, dict) else "1 шт"
             
-            # Очищуємо та нормалізуємо назву
             norm_name = re.sub(r'\s+', ' ', str(ing_name)).strip().lower()
             if not norm_name:
                 continue
 
-            # Якщо продукт уже є в холодильнику — пропускаємо
-            if norm_name in fridge_names:
-                continue
-
-            # Красива назва для показу з великої літери
             if norm_name not in display_names:
-                display_names[norm_name] = norm_name.capitalize()
+                display_names[norm_name] = str(ing_name).strip().capitalize()
 
-            # Парсимо число і одиницю виміру (напр. "200 г", "1.5 ст. л.", "3")
             match = re.match(r"([\d\.,]+)\s*(.*)", str(raw_amount).strip())
             if match:
                 try:
@@ -100,21 +110,26 @@ def generate_shopping_list():
                 num = 1.0 * multiplier
                 unit = "шт"
 
-            aggregated_ingredients[(norm_name, unit)] += num
+            required_ingredients[(norm_name, unit)] += num
 
+    # 3. Вираховуємо дефіцит: Потрібно мінус Наявне в холодильнику
     added_count = 0
-    for (norm_name, unit), total_qty in aggregated_ingredients.items():
-        name = display_names.get(norm_name, norm_name.capitalize())
-        qty_str = f"{int(total_qty) if total_qty.is_integer() else round(total_qty, 2)} {unit}"
-        
-        supabase.table("shopping_list").insert({
-            "item_name": name,
-            "amount": qty_str,
-            "is_crossed_out": False
-        }).execute()
-        added_count += 1
+    for (norm_name, unit), total_required in required_ingredients.items():
+        available = fridge_stock.get((norm_name, unit), 0.0)
+        needed = total_required - available
+
+        if needed > 0:
+            name = display_names.get(norm_name, norm_name.capitalize())
+            qty_str = f"{int(needed) if needed.is_integer() else round(needed, 2)} {unit}"
+            
+            supabase.table("shopping_list").insert({
+                "item_name": name,
+                "amount": qty_str,
+                "is_crossed_out": False
+            }).execute()
+            added_count += 1
 
     if added_count == 0:
-        return {"message": "Усі інгредієнти вже є в холодильнику або рецепти не мають інгредієнтів!"}
+        return {"message": "Усі інгредієнти є в холодильнику у достатній кількості!"}
 
-    return {"message": f"Список покупок згенеровано! Додано/сумовано {added_count} продуктів."}
+    return {"message": f"Список покупок згенеровано! Додано {added_count} позицій з урахуванням запасів."}
