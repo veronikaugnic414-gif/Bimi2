@@ -176,5 +176,8 @@ export const api = {
         }).then(res => res.json()),
 
     deleteDutyLog: (logId) => 
-        fetch(`${API_BASE_URL}/points/log/${logId}`, { method: 'DELETE' }).then(res => res.json())
+        fetch(`${API_BASE_URL}/points/log/${logId}`, { method: 'DELETE' }).then(res => res.json()),
+
+    resetPoints: () => 
+        fetch(`${API_BASE_URL}/points/reset`, { method: 'DELETE' }).then(res => res.json())
 };

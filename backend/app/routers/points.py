@@ -33,8 +33,8 @@ def get_points_summary(current_user_id: int = 1):
     def calc_stats(uid: int):
         user_logs = [l for l in logs if l.get("user_id") == uid]
         total = sum(l.get("points", 0) for l in user_logs)
-        month = sum(l.get("points", 0) for l in user_logs if l.get("completed_at") >= month_start)
-        week = sum(l.get("points", 0) for l in user_logs if l.get("completed_at") >= week_start)
+        month = sum(l.get("points", 0) for l in user_logs if l.get("completed_at", "") >= month_start)
+        week = sum(l.get("points", 0) for l in user_logs if l.get("completed_at", "") >= week_start)
         return {"total": total, "month": month, "week": week}
 
     stats_user1 = calc_stats(1)
@@ -49,7 +49,7 @@ def get_points_summary(current_user_id: int = 1):
 
 @router.get("/tasks")
 def get_duty_tasks():
-    res = supabase.table("duty_tasks").select("*").order("points", desc=False).execute()
+    res = supabase.table("duty_tasks").select("*").order("id", desc=True).execute()
     return res.data or []
 
 @router.post("/tasks")
@@ -80,3 +80,8 @@ def log_completed_task(log_data: DutyLogCreate):
 def delete_log(log_id: int):
     supabase.table("duty_logs").delete().eq("id", log_id).execute()
     return {"message": "Запис видалено"}
+
+@router.delete("/reset")
+def reset_all_points():
+    supabase.table("duty_logs").delete().neq("id", 0).execute()
+    return {"message": "Усі поінти успішно скинуто!"}

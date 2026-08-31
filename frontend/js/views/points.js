@@ -35,14 +35,19 @@ export async function renderPoints(container, currentUser) {
     container.innerHTML = `
       <div class="space-y-6 pb-8">
         <!-- Шапка -->
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center flex-wrap gap-2">
           <div>
             <h2 class="text-2xl font-black text-gray-900 tracking-tight">Баланс поінтів</h2>
             <p class="text-xs text-purple-600 font-bold">Гейміфікація домашніх обов'язків</p>
           </div>
-          <button id="btn-toggle-history" class="bg-purple-100/80 hover:bg-purple-200/80 border border-purple-200 text-purple-900 text-xs px-4 py-2 rounded-2xl font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
-            <i data-lucide="history" class="w-4 h-4 text-purple-600"></i> Історія
-          </button>
+          <div class="flex items-center gap-2">
+            <button id="btn-reset-points" class="bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs px-3 py-2 rounded-2xl font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-rose-500"></i> Скинути поінти
+            </button>
+            <button id="btn-toggle-history" class="bg-purple-100/80 hover:bg-purple-200/80 border border-purple-200 text-purple-900 text-xs px-4 py-2 rounded-2xl font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
+              <i data-lucide="history" class="w-4 h-4 text-purple-600"></i> Історія
+            </button>
+          </div>
         </div>
 
         <!-- Головна картка поінтів -->
@@ -105,7 +110,7 @@ export async function renderPoints(container, currentUser) {
           <h3 id="task-modal-title" class="font-black text-base text-gray-900 text-center">Створити обов'язок</h3>
           <input type="hidden" id="edit-task-id" value="">
           <input type="text" id="new-task-title" placeholder="Назва справи (наприклад, Пропилососити)..." class="w-full bg-purple-50/40 border border-purple-100 rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400">
-          <input type="number" id="new-task-points" placeholder="Кількість поінтів (напр. 25)" value="20" class="w-full bg-purple-50/40 border border-purple-100 rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400">
+          <input type="number" id="new-task-points" placeholder="Кількість поінтів (напр. 20)" value="20" class="w-full bg-purple-50/40 border border-purple-100 rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400">
           
           <div class="flex gap-2 pt-2">
             <button id="btn-cancel-task" class="w-1/2 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-2xl transition cursor-pointer">Скасувати</button>
@@ -129,12 +134,12 @@ export async function renderPoints(container, currentUser) {
                 <div>
                   <div class="flex items-center gap-1.5">
                     <span class="text-xs font-extrabold ${Number(l.user_id) === 1 ? 'text-purple-700' : 'text-pink-600'}">${Number(l.user_id) === 1 ? 'Вероніка' : 'Даша'}</span>
-                    <span class="text-xs text-gray-900 font-semibold">• ${l.task_title}</span>
+                    <span class="text-xs text-gray-900 font-semibold">• ${l.task_title || l.title || 'Справа'}</span>
                   </div>
-                  <p class="text-[10px] text-gray-400 mt-0.5">${new Date(l.completed_at).toLocaleString('uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                  <p class="text-[10px] text-gray-400 mt-0.5">${l.completed_at ? new Date(l.completed_at).toLocaleString('uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''}</p>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-xs font-black text-purple-900 bg-white px-2 py-1 rounded-xl shadow-2xs">+${l.points} pts</span>
+                  <span class="text-xs font-black text-purple-900 bg-white px-2 py-1 rounded-xl shadow-2xs">+${l.points || 0} pts</span>
                   <button data-id="${l.id}" class="btn-delete-log text-gray-300 hover:text-rose-500 p-1 cursor-pointer">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
@@ -155,37 +160,44 @@ export async function renderPoints(container, currentUser) {
         return;
       }
 
-      grid.innerHTML = taskList.map(t => `
-        <div class="glass-card p-3.5 rounded-2xl border border-purple-100/60 flex justify-between items-center hover:bg-purple-50/50 transition">
-          <div class="flex items-center gap-3 min-w-0 pr-2">
-            <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
-              <i data-lucide="${t.icon || 'sparkles'}" class="w-4 h-4"></i>
+      grid.innerHTML = taskList.map(t => {
+        const title = t.title || t.task_name || t.name || 'Обов’язок';
+        const points = t.points || 10;
+        return `
+          <div class="glass-card p-3.5 rounded-2xl border border-purple-100/60 flex justify-between items-center hover:bg-purple-50/50 transition">
+            <div class="flex items-center gap-3 min-w-0 pr-2">
+              <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                <i data-lucide="${t.icon || 'sparkles'}" class="w-4 h-4"></i>
+              </div>
+              <div class="truncate">
+                <p class="font-bold text-xs text-gray-900 truncate">${title}</p>
+                <p class="text-[10px] font-black text-purple-600">+${points} pts</p>
+              </div>
             </div>
-            <div class="truncate">
-              <p class="font-bold text-xs text-gray-900 truncate">${t.title}</p>
-              <p class="text-[10px] font-black text-purple-600">+${t.points} pts</p>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <!-- Кнопка + Нарахувати -->
+              <button data-id="${t.id}" data-title="${title}" data-points="${points}" class="btn-claim-task bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Нарахувати
+              </button>
+              <!-- Редагувати -->
+              <button data-id="${t.id}" data-title="${title}" data-points="${points}" class="btn-edit-task text-gray-400 hover:text-purple-600 p-1.5 cursor-pointer transition rounded-lg hover:bg-purple-100/50">
+                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+              </button>
+              <!-- Видалити -->
+              <button data-id="${t.id}" class="btn-delete-task text-gray-400 hover:text-rose-500 p-1.5 cursor-pointer transition rounded-lg hover:bg-rose-50">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
             </div>
           </div>
-          <div class="flex items-center gap-1 shrink-0">
-            <button data-id="${t.id}" data-title="${t.title}" data-points="${t.points}" class="btn-claim-task bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs transition cursor-pointer">
-              + Зарахувати
-            </button>
-            <button data-id="${t.id}" data-title="${t.title}" data-points="${t.points}" class="btn-edit-task text-gray-300 hover:text-purple-600 p-1.5 cursor-pointer transition">
-              <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-            </button>
-            <button data-id="${t.id}" class="btn-delete-task text-gray-300 hover:text-rose-500 p-1.5 cursor-pointer transition">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
       if (window.lucide) window.lucide.createIcons();
 
       grid.querySelectorAll('.btn-claim-task').forEach(btn => {
         btn.onclick = async () => {
           const title = btn.dataset.title;
-          const points = parseInt(btn.dataset.points);
+          const points = parseInt(btn.dataset.points) || 10;
           const taskId = parseInt(btn.dataset.id);
 
           try {
@@ -239,7 +251,10 @@ export async function renderPoints(container, currentUser) {
     if (searchInput) {
       searchInput.oninput = (e) => {
         const query = e.target.value.toLowerCase().trim();
-        const filtered = tasks.filter(t => (t.title || '').toLowerCase().includes(query));
+        const filtered = tasks.filter(t => {
+          const name = (t.title || t.task_name || t.name || '').toLowerCase();
+          return name.includes(query);
+        });
         renderTasksGrid(filtered);
       };
     }
@@ -284,6 +299,19 @@ export async function renderPoints(container, currentUser) {
         taskModal.classList.add('hidden');
         renderPoints(container, currentUser);
       }
+    };
+
+    // Скидання всіх поінтів
+    document.getElementById('btn-reset-points').onclick = () => {
+      showConfirm('Скинути всі поінти та очистити історію?', 'Баланс Вероніки та Даші обнулиться.', async () => {
+        try {
+          await api.resetPoints();
+          showToast('Поінти успішно скинуто', 'info');
+        } catch (e) {
+          showToast('Помилка скидання поінтів', 'error');
+        }
+        renderPoints(container, currentUser);
+      });
     };
 
     const historyModal = document.getElementById('modal-history');
