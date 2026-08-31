@@ -230,7 +230,7 @@ export async function renderDashboard(container, currentUser) {
       };
     });
 
-    // Побудова графіка з м'якими закругленими кінцями
+    // Побудова графіка: кожна витрата рендериться красивим кружечком/капсулою
     const canvas = document.getElementById("financeChartCanvas");
     if (canvas) {
       const ctx = canvas.getContext("2d");
@@ -238,19 +238,27 @@ export async function renderDashboard(container, currentUser) {
 
       const isDark = document.body.classList.contains('dark-mode');
 
+      // Мінімальна довжина дуги (4% від кола), щоб маленькі суми формували кружечок
+      const minArc = totalBudget * 0.04;
+      const vArc = veronikaSpent > 0 ? Math.max(veronikaSpent, minArc) : 0;
+      const dArc = dashaSpent > 0 ? Math.max(dashaSpent, minArc) : 0;
+      const rArc = Math.max(0, totalBudget - vArc - dArc);
+
+      const realAmounts = [veronikaSpent, dashaSpent, remaining];
+
       financeChart = new Chart(ctx, {
         type: "doughnut",
         data: {
           labels: ["Вероніка", "Даша", "Залишок"],
           datasets: [{
-            data: [veronikaSpent, dashaSpent, remaining],
+            data: [vArc, dArc, rArc],
             backgroundColor: [
               "#C084FC", 
               "#F472B6", 
               isDark ? "#24283B" : "#F3E8FF" 
             ],
             borderWidth: 0,
-            borderRadius: 12,
+            borderRadius: 30, // Повністю закруглена плашка
             spacing: 4,
             hoverOffset: 6
           }]
@@ -263,7 +271,8 @@ export async function renderDashboard(container, currentUser) {
             tooltip: {
               callbacks: {
                 label: function(context) {
-                  return ` ${context.label}: ${context.parsed} грн`;
+                  const realVal = realAmounts[context.dataIndex];
+                  return ` ${context.label}: ${realVal} грн`;
                 }
               }
             }
