@@ -6,9 +6,9 @@
   <title>BiMi Household</title>
 
   <!-- PWA & Favicons -->
-  <link rel="icon" type="image/png" sizes="64x64" href="/icons/favicon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="64x64" href="./icons/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#090A0F">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -17,7 +17,7 @@
   <!-- Шрифт Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -56,7 +56,7 @@
       <div class="flex items-center justify-between mb-8 px-2">
         <div class="flex items-center space-x-3">
           <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-            <img src="/icons/favicon.png" alt="BiMi" class="w-8 h-8 rounded-xl object-cover">
+            <img src="./icons/favicon.png" alt="BiMi" class="w-8 h-8 rounded-xl object-cover">
           </div>
           <div>
             <span class="font-semibold text-lg text-gray-900">BiMi</span>
@@ -71,6 +71,9 @@
       <nav class="space-y-1">
         <button data-tab="dashboard" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
           <i data-lucide="layout-dashboard" class="w-4 h-4"></i> <span>Головна</span>
+        </button>
+        <button data-tab="points" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
+          <i data-lucide="trophy" class="w-4 h-4 text-purple-600"></i> <span>Поінти</span>
         </button>
         <button data-tab="calendar" class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl font-semibold text-gray-600 hover:bg-white/80 hover:text-purple-600 transition text-sm">
           <i data-lucide="calendar" class="w-4 h-4"></i> <span>Календар</span>
@@ -121,6 +124,9 @@
     <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
       <button data-tab="dashboard" class="nav-btn flex-shrink-0 flex flex-col items-center px-3 py-1 rounded-2xl text-gray-400 cursor-pointer">
         <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span class="text-[10px] font-semibold mt-1 whitespace-nowrap">Головна</span>
+      </button>
+      <button data-tab="points" class="nav-btn flex-shrink-0 flex flex-col items-center px-3 py-1 rounded-2xl text-gray-400 cursor-pointer">
+        <i data-lucide="trophy" class="w-4 h-4"></i><span class="text-[10px] font-semibold mt-1 whitespace-nowrap">Поінти</span>
       </button>
       <button data-tab="calendar" class="nav-btn flex-shrink-0 flex flex-col items-center px-3 py-1 rounded-2xl text-gray-400 cursor-pointer">
         <i data-lucide="calendar" class="w-4 h-4"></i><span class="text-[10px] font-semibold mt-1 whitespace-nowrap">Календар</span>
