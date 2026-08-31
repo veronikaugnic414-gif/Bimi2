@@ -17,14 +17,23 @@ def get_shopping_list():
 @router.post("")
 @router.post("/")
 def add_shopping_item(item: ShoppingItemCreate):
-    res = supabase.table("shopping_list").insert({"item_name": item.item_name, "amount": item.amount, "is_crossed_out": False}).execute()
+    res = supabase.table("shopping_list").insert({
+        "item_name": item.item_name, 
+        "amount": item.amount, 
+        "is_crossed_out": False
+    }).execute()
     return {"message": "Товар додано до списку", "data": res.data}
 
+# /clear ОБОВ'ЯЗКОВО має бути ДО /{item_id}
 @router.delete("/clear")
 def clear_shopping_list():
     """Повне очищення списку покупок"""
-    supabase.table("shopping_list").delete().neq("id", 0).execute()
-    return {"message": "Список покупок успішно очищено!"}
+    try:
+        supabase.table("shopping_list").delete().gte("id", 0).execute()
+        return {"message": "Список покупок успішно очищено!"}
+    except Exception as e:
+        print("Помилка очищення списку:", e)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.patch("/{item_id}/toggle")
 def toggle_shopping_item(item_id: int):
