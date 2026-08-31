@@ -3,19 +3,35 @@ import { showToast, showConfirm } from '../toast.js';
 
 export async function renderPoints(container, currentUser) {
   try {
-    const currentUid = currentUser?.id || 1;
+    const currentUid = Number(currentUser?.id || 1);
     const partnerName = currentUid === 1 ? "Даша" : "Вероніка";
     const myName = currentUid === 1 ? "Вероніка" : "Даша";
 
-    const [summary, rawTasks] = await Promise.all([
-      api.getPointsSummary(currentUid),
-      api.getDutyTasks()
-    ]);
+    // Безпечне завантаження: якщо бекенд повертає помилку, інтерфейс не зависає
+    let summary = { user_stats: { total: 0, month: 0, week: 0 }, partner_stats: { total: 0, month: 0, week: 0 }, logs: [] };
+    let tasks = [];
 
-    const tasks = Array.isArray(rawTasks) ? rawTasks : [];
-    const myStats = summary.user_stats || { total: 0, month: 0, week: 0 };
-    const partnerStats = summary.partner_stats || { total: 0, month: 0, week: 0 };
-    const logs = summary.logs || [];
+    try {
+      const [sumRes, tasksRes] = await Promise.all([
+        api.getPointsSummary(currentUid).catch(err => {
+          console.warn("Points summary fetch warning:", err);
+          return null;
+        }),
+        api.getDutyTasks().catch(err => {
+          console.warn("Duty tasks fetch warning:", err);
+          return [];
+        })
+      ]);
+
+      if (sumRes && typeof sumRes === 'object') summary = sumRes;
+      if (Array.isArray(tasksRes)) tasks = tasksRes;
+    } catch (fetchErr) {
+      console.warn("Network fallback activated:", fetchErr);
+    }
+
+    const myStats = summary?.user_stats || { total: 0, month: 0, week: 0 };
+    const partnerStats = summary?.partner_stats || { total: 0, month: 0, week: 0 };
+    const logs = Array.isArray(summary?.logs) ? summary.logs : [];
 
     container.innerHTML = `
       <div class="space-y-6 pb-8">
@@ -35,7 +51,7 @@ export async function renderPoints(container, currentUser) {
           <div>
             <span class="text-xs font-bold uppercase tracking-wider text-purple-600">Твої поінти (${myName})</span>
             <div class="text-6xl font-black text-purple-900 tracking-tight mt-1 flex items-center justify-center gap-2">
-              <span>${myStats.total}</span>
+              <span>${myStats.total || 0}</span>
               <span class="text-2xl text-purple-500 font-bold">pts</span>
             </div>
           </div>
@@ -44,11 +60,11 @@ export async function renderPoints(container, currentUser) {
           <div class="grid grid-cols-2 gap-3 pt-2 border-t border-purple-100/60">
             <div class="bg-purple-50/60 p-3 rounded-2xl">
               <p class="text-[10px] font-bold text-gray-500 uppercase">За цей тиждень</p>
-              <p class="text-sm font-black text-purple-800 mt-0.5">+${myStats.week} pts</p>
+              <p class="text-sm font-black text-purple-800 mt-0.5">+${myStats.week || 0} pts</p>
             </div>
             <div class="bg-purple-50/60 p-3 rounded-2xl">
               <p class="text-[10px] font-bold text-gray-500 uppercase">За цей місяць</p>
-              <p class="text-sm font-black text-purple-800 mt-0.5">+${myStats.month} pts</p>
+              <p class="text-sm font-black text-purple-800 mt-0.5">+${myStats.month || 0} pts</p>
             </div>
           </div>
 
@@ -56,10 +72,10 @@ export async function renderPoints(container, currentUser) {
           <div class="bg-pink-50/70 p-4 rounded-2xl flex justify-between items-center border border-pink-100/60">
             <div class="text-left">
               <p class="text-xs font-bold text-pink-950">${partnerName}</p>
-              <p class="text-[10px] text-pink-500 font-semibold">Тиждень: +${partnerStats.week} | Місяць: +${partnerStats.month}</p>
+              <p class="text-[10px] text-pink-500 font-semibold">Тиждень: +${partnerStats.week || 0} | Місяць: +${partnerStats.month || 0}</p>
             </div>
             <div class="text-right">
-              <span class="text-lg font-black text-pink-600">${partnerStats.total}</span>
+              <span class="text-lg font-black text-pink-600">${partnerStats.total || 0}</span>
               <span class="text-xs font-bold text-pink-400 ml-0.5">pts</span>
             </div>
           </div>
@@ -76,7 +92,7 @@ export async function renderPoints(container, currentUser) {
             </button>
           </div>
 
-          <!-- Поле швидкого живого пошуку обов'язків -->
+          <!-- Поле живого пошуку -->
           <div class="relative">
             <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400"></i>
             <input type="text" id="task-search-input" placeholder="Пошук справи (напр. посуд, прання, ванна)..." class="w-full bg-white/90 border border-purple-100/80 rounded-2xl pl-11 pr-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400 shadow-2xs">
@@ -84,7 +100,6 @@ export async function renderPoints(container, currentUser) {
 
           <!-- Сітка обов'язків -->
           <div id="tasks-grid-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <!-- Рендериться динамічно через renderTasksGrid -->
           </div>
         </div>
       </div>
@@ -117,7 +132,7 @@ export async function renderPoints(container, currentUser) {
               <div class="p-3 bg-purple-50/50 rounded-2xl flex justify-between items-center border border-purple-100/50">
                 <div>
                   <div class="flex items-center gap-1.5">
-                    <span class="text-xs font-extrabold ${l.user_id === 1 ? 'text-purple-700' : 'text-pink-600'}">${l.user_id === 1 ? 'Вероніка' : 'Даша'}</span>
+                    <span class="text-xs font-extrabold ${Number(l.user_id) === 1 ? 'text-purple-700' : 'text-pink-600'}">${Number(l.user_id) === 1 ? 'Вероніка' : 'Даша'}</span>
                     <span class="text-xs text-gray-900 font-semibold">• ${l.task_title}</span>
                   </div>
                   <p class="text-[10px] text-gray-400 mt-0.5">${new Date(l.completed_at).toLocaleString('uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
@@ -135,13 +150,12 @@ export async function renderPoints(container, currentUser) {
       </div>
     `;
 
-    // Функція відображення списку обов'язків
     function renderTasksGrid(taskList) {
       const grid = document.getElementById('tasks-grid-container');
       if (!grid) return;
 
       if (!taskList.length) {
-        grid.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-gray-400 font-medium">Справ за цим запитом не знайдено</div>';
+        grid.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-gray-400 font-medium">Обов’язків ще немає або нічого не знайдено</div>';
         return;
       }
 
@@ -169,21 +183,23 @@ export async function renderPoints(container, currentUser) {
 
       if (window.lucide) window.lucide.createIcons();
 
-      // Прив'язка кліків після перемальовування
       grid.querySelectorAll('.btn-claim-task').forEach(btn => {
         btn.onclick = async () => {
           const title = btn.dataset.title;
           const points = parseInt(btn.dataset.points);
           const taskId = parseInt(btn.dataset.id);
 
-          await api.logDutyTask({
-            user_id: currentUid,
-            task_id: taskId,
-            task_title: title,
-            points: points
-          });
-
-          showToast(`+${points} pts зараховано за "${title}"! 🌟`, 'success');
+          try {
+            await api.logDutyTask({
+              user_id: currentUid,
+              task_id: taskId,
+              task_title: title,
+              points: points
+            });
+            showToast(`+${points} pts зараховано за "${title}"! 🌟`, 'success');
+          } catch (e) {
+            showToast('Помилка збереження на сервері', 'error');
+          }
           renderPoints(container, currentUser);
         };
       });
@@ -192,20 +208,22 @@ export async function renderPoints(container, currentUser) {
         btn.onclick = (e) => {
           e.stopPropagation();
           showConfirm('Видалити цей обов’язок зі списку?', '', async () => {
-            await api.deleteDutyTask(btn.dataset.id);
-            showToast('Обов’язок видалено', 'info');
+            try {
+              await api.deleteDutyTask(btn.dataset.id);
+              showToast('Обов’язок видалено', 'info');
+            } catch (e) {
+              showToast('Помилка видалення', 'error');
+            }
             renderPoints(container, currentUser);
           });
         };
       });
     }
 
-    // Початковий рендер усіх справ
     renderTasksGrid(tasks);
 
     if (window.lucide) window.lucide.createIcons();
 
-    // Обробник живого пошуку справ
     const searchInput = document.getElementById('task-search-input');
     if (searchInput) {
       searchInput.oninput = (e) => {
@@ -215,16 +233,16 @@ export async function renderPoints(container, currentUser) {
       };
     }
 
-    // Видалення запису з історії
     container.querySelectorAll('.btn-delete-log').forEach(btn => {
       btn.onclick = async (e) => {
         e.stopPropagation();
-        await api.deleteDutyLog(btn.dataset.id);
+        try {
+          await api.deleteDutyLog(btn.dataset.id);
+        } catch (err) {}
         renderPoints(container, currentUser);
       };
     });
 
-    // Модальне вікно створення справи
     const taskModal = document.getElementById('modal-create-task');
     document.getElementById('btn-open-task-modal').onclick = () => taskModal.classList.remove('hidden');
     document.getElementById('btn-cancel-task').onclick = () => taskModal.classList.add('hidden');
@@ -233,19 +251,28 @@ export async function renderPoints(container, currentUser) {
       const title = document.getElementById('new-task-title').value.trim();
       const points = parseInt(document.getElementById('new-task-points').value) || 10;
       if (title) {
-        await api.createDutyTask({ title, points, icon: 'sparkles' });
+        try {
+          await api.createDutyTask({ title, points, icon: 'sparkles' });
+          showToast(`Справу "${title}" створено!`, 'success');
+        } catch (e) {
+          showToast('Помилка додавання', 'error');
+        }
         taskModal.classList.add('hidden');
-        showToast(`Справу "${title}" створено!`, 'success');
         renderPoints(container, currentUser);
       }
     };
 
-    // Модальне вікно історії
     const historyModal = document.getElementById('modal-history');
     document.getElementById('btn-toggle-history').onclick = () => historyModal.classList.remove('hidden');
     document.getElementById('btn-close-history').onclick = () => historyModal.classList.add('hidden');
 
   } catch (err) {
-    console.error("Points render error:", err);
+    console.error("Points fatal render error:", err);
+    container.innerHTML = `
+      <div class="glass-card p-6 text-center rounded-3xl space-y-2 border border-rose-200">
+        <p class="text-sm font-bold text-rose-500">Помилка завантаження розділу</p>
+        <p class="text-xs text-gray-500">Перевірте підключення до сервера</p>
+      </div>
+    `;
   }
 }
