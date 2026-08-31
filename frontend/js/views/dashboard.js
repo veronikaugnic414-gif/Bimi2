@@ -85,8 +85,13 @@ export async function renderDashboard(container, currentUser) {
             </button>
           </div>
 
-          <div class="w-44 h-44 mx-auto relative my-2">
+          <!-- Кільцевий Графік із залишком по центру -->
+          <div class="w-48 h-48 mx-auto relative my-2 flex items-center justify-center">
             <canvas id="financeChartCanvas"></canvas>
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span class="text-base font-black text-gray-900 tracking-tight">${remaining} ₴</span>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">залишок</span>
+            </div>
           </div>
 
           <div class="grid grid-cols-3 gap-2.5 text-center pt-3 border-t border-purple-100/60">
@@ -225,6 +230,7 @@ export async function renderDashboard(container, currentUser) {
       };
     });
 
+    // Побудова графіка з точними значеннями
     const canvas = document.getElementById("financeChartCanvas");
     if (canvas) {
       const ctx = canvas.getContext("2d");
@@ -232,36 +238,36 @@ export async function renderDashboard(container, currentUser) {
 
       const isDark = document.body.classList.contains('dark-mode');
 
-      const minVisible = totalBudget * 0.04; 
-      const vRender = veronikaSpent > 0 ? Math.max(veronikaSpent, minVisible) : 0;
-      const dRender = dashaSpent > 0 ? Math.max(dashaSpent, minVisible) : 0;
-      const rRender = Math.max(0, totalBudget - vRender - dRender);
-
       financeChart = new Chart(ctx, {
         type: "doughnut",
         data: {
           labels: ["Вероніка", "Даша", "Залишок"],
           datasets: [{
-            data: [
-              vRender || (totalSpent === 0 ? 0 : 0.01), 
-              dRender || (totalSpent === 0 ? 0 : 0.01), 
-              rRender
-            ],
+            data: [veronikaSpent, dashaSpent, remaining],
             backgroundColor: [
               "#C084FC", 
               "#F472B6", 
               isDark ? "#24283B" : "#F3E8FF" 
             ],
-            borderWidth: isDark ? 4 : 3, 
-            borderColor: isDark ? "#11131E" : "#ffffff", 
-            borderRadius: 6 
+            borderWidth: 2,
+            borderColor: isDark ? "#11131E" : "#ffffff",
+            hoverOffset: 4
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          cutout: '72%' 
+          plugins: { 
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ` ${context.label}: ${context.parsed} грн`;
+                }
+              }
+            }
+          },
+          cutout: '75%' 
         }
       });
     }
