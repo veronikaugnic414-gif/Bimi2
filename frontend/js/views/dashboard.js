@@ -230,7 +230,7 @@ export async function renderDashboard(container, currentUser) {
       };
     });
 
-    // Побудова графіка з точними значеннями
+    // Побудова графіка з м'якими закругленими кінцями
     const canvas = document.getElementById("financeChartCanvas");
     if (canvas) {
       const ctx = canvas.getContext("2d");
@@ -249,9 +249,10 @@ export async function renderDashboard(container, currentUser) {
               "#F472B6", 
               isDark ? "#24283B" : "#F3E8FF" 
             ],
-            borderWidth: 2,
-            borderColor: isDark ? "#11131E" : "#ffffff",
-            hoverOffset: 4
+            borderWidth: 0,
+            borderRadius: 12,
+            spacing: 4,
+            hoverOffset: 6
           }]
         },
         options: {
@@ -267,7 +268,7 @@ export async function renderDashboard(container, currentUser) {
               }
             }
           },
-          cutout: '75%' 
+          cutout: '76%' 
         }
       });
     }
