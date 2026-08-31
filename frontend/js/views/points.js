@@ -34,7 +34,7 @@ export async function renderPoints(container, currentUser) {
 
     container.innerHTML = `
       <div class="space-y-6 pb-8">
-        <!-- Шапка -->
+        <!-- Шапка сторінки -->
         <div class="flex justify-between items-center flex-wrap gap-2">
           <div>
             <h2 class="text-2xl font-black text-gray-900 tracking-tight">Баланс поінтів</h2>
@@ -85,11 +85,12 @@ export async function renderPoints(container, currentUser) {
 
         <!-- Секція нарахування справ -->
         <div class="space-y-3">
-          <div class="flex justify-between items-center">
-            <h3 class="font-extrabold text-sm text-gray-900 tracking-tight flex items-center gap-2">
-              <i data-lucide="check-circle-2" class="w-4 h-4 text-purple-600"></i> Виконала справу? Нарахуй поінти:
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="font-extrabold text-sm text-gray-900 tracking-tight flex items-center gap-2 min-w-0">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-purple-600 shrink-0"></i> 
+              <span class="truncate">Виконала справу? Нарахуй поінти:</span>
             </h3>
-            <button id="btn-open-task-modal" class="text-xs font-bold text-purple-600 hover:text-purple-800 cursor-pointer flex items-center gap-1">
+            <button id="btn-open-task-modal" class="text-xs font-bold text-purple-600 hover:text-purple-800 cursor-pointer flex items-center gap-1 shrink-0 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-xl border border-purple-100/80 transition">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i> Новий обов'язок
             </button>
           </div>
@@ -175,15 +176,12 @@ export async function renderPoints(container, currentUser) {
               </div>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
-              <!-- Кнопка + Нарахувати -->
               <button data-id="${t.id}" data-title="${title}" data-points="${points}" class="btn-claim-task bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1">
                 <i data-lucide="plus" class="w-3.5 h-3.5"></i> Нарахувати
               </button>
-              <!-- Редагувати -->
               <button data-id="${t.id}" data-title="${title}" data-points="${points}" class="btn-edit-task text-gray-400 hover:text-purple-600 p-1.5 cursor-pointer transition rounded-lg hover:bg-purple-100/50">
                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
               </button>
-              <!-- Видалити -->
               <button data-id="${t.id}" class="btn-delete-task text-gray-400 hover:text-rose-500 p-1.5 cursor-pointer transition rounded-lg hover:bg-rose-50">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
@@ -301,7 +299,6 @@ export async function renderPoints(container, currentUser) {
       }
     };
 
-    // Скидання всіх поінтів
     document.getElementById('btn-reset-points').onclick = () => {
       showConfirm('Скинути всі поінти та очистити історію?', 'Баланс Вероніки та Даші обнулиться.', async () => {
         try {
