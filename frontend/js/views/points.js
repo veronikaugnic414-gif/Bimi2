@@ -7,7 +7,6 @@ export async function renderPoints(container, currentUser) {
     const partnerName = currentUid === 1 ? "Даша" : "Вероніка";
     const myName = currentUid === 1 ? "Вероніка" : "Даша";
 
-    // Безпечне завантаження: якщо бекенд повертає помилку, інтерфейс не зависає
     let summary = { user_stats: { total: 0, month: 0, week: 0 }, partner_stats: { total: 0, month: 0, week: 0 }, logs: [] };
     let tasks = [];
 
@@ -56,7 +55,6 @@ export async function renderPoints(container, currentUser) {
             </div>
           </div>
 
-          <!-- Деталізація періодів -->
           <div class="grid grid-cols-2 gap-3 pt-2 border-t border-purple-100/60">
             <div class="bg-purple-50/60 p-3 rounded-2xl">
               <p class="text-[10px] font-bold text-gray-500 uppercase">За цей тиждень</p>
@@ -68,7 +66,6 @@ export async function renderPoints(container, currentUser) {
             </div>
           </div>
 
-          <!-- Рахунок сусідки -->
           <div class="bg-pink-50/70 p-4 rounded-2xl flex justify-between items-center border border-pink-100/60">
             <div class="text-left">
               <p class="text-xs font-bold text-pink-950">${partnerName}</p>
@@ -92,28 +89,27 @@ export async function renderPoints(container, currentUser) {
             </button>
           </div>
 
-          <!-- Поле живого пошуку -->
           <div class="relative">
             <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400"></i>
             <input type="text" id="task-search-input" placeholder="Пошук справи (напр. посуд, прання, ванна)..." class="w-full bg-white/90 border border-purple-100/80 rounded-2xl pl-11 pr-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400 shadow-2xs">
           </div>
 
-          <!-- Сітка обов'язків -->
           <div id="tasks-grid-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           </div>
         </div>
       </div>
 
-      <!-- Модальне вікно створення нової справи -->
+      <!-- Модальне вікно створення/редагування справи -->
       <div id="modal-create-task" class="hidden fixed inset-0 bg-purple-950/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="glass-card p-6 w-full max-w-sm space-y-4 rounded-3xl shadow-2xl bg-white">
-          <h3 class="font-black text-base text-gray-900 text-center">Створити обов'язок</h3>
+          <h3 id="task-modal-title" class="font-black text-base text-gray-900 text-center">Створити обов'язок</h3>
+          <input type="hidden" id="edit-task-id" value="">
           <input type="text" id="new-task-title" placeholder="Назва справи (наприклад, Пропилососити)..." class="w-full bg-purple-50/40 border border-purple-100 rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400">
           <input type="number" id="new-task-points" placeholder="Кількість поінтів (напр. 25)" value="20" class="w-full bg-purple-50/40 border border-purple-100 rounded-2xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400">
           
           <div class="flex gap-2 pt-2">
             <button id="btn-cancel-task" class="w-1/2 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-2xl transition cursor-pointer">Скасувати</button>
-            <button id="btn-save-task" class="w-1/2 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-2xl shadow-md transition cursor-pointer">Створити</button>
+            <button id="btn-save-task" class="w-1/2 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-2xl shadow-md transition cursor-pointer">Зберегти</button>
           </div>
         </div>
       </div>
@@ -174,6 +170,9 @@ export async function renderPoints(container, currentUser) {
             <button data-id="${t.id}" data-title="${t.title}" data-points="${t.points}" class="btn-claim-task bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs transition cursor-pointer">
               + Зарахувати
             </button>
+            <button data-id="${t.id}" data-title="${t.title}" data-points="${t.points}" class="btn-edit-task text-gray-300 hover:text-purple-600 p-1.5 cursor-pointer transition">
+              <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+            </button>
             <button data-id="${t.id}" class="btn-delete-task text-gray-300 hover:text-rose-500 p-1.5 cursor-pointer transition">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             </button>
@@ -201,6 +200,18 @@ export async function renderPoints(container, currentUser) {
             showToast('Помилка збереження на сервері', 'error');
           }
           renderPoints(container, currentUser);
+        };
+      });
+
+      grid.querySelectorAll('.btn-edit-task').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const taskModal = document.getElementById('modal-create-task');
+          document.getElementById('task-modal-title').innerText = "Редагувати обов'язок";
+          document.getElementById('edit-task-id').value = btn.dataset.id;
+          document.getElementById('new-task-title').value = btn.dataset.title;
+          document.getElementById('new-task-points').value = btn.dataset.points;
+          taskModal.classList.remove('hidden');
         };
       });
 
@@ -244,18 +255,31 @@ export async function renderPoints(container, currentUser) {
     });
 
     const taskModal = document.getElementById('modal-create-task');
-    document.getElementById('btn-open-task-modal').onclick = () => taskModal.classList.remove('hidden');
+    document.getElementById('btn-open-task-modal').onclick = () => {
+      document.getElementById('task-modal-title').innerText = "Створити обов'язок";
+      document.getElementById('edit-task-id').value = "";
+      document.getElementById('new-task-title').value = "";
+      document.getElementById('new-task-points').value = "20";
+      taskModal.classList.remove('hidden');
+    };
     document.getElementById('btn-cancel-task').onclick = () => taskModal.classList.add('hidden');
 
     document.getElementById('btn-save-task').onclick = async () => {
+      const editId = document.getElementById('edit-task-id').value;
       const title = document.getElementById('new-task-title').value.trim();
       const points = parseInt(document.getElementById('new-task-points').value) || 10;
+      
       if (title) {
         try {
-          await api.createDutyTask({ title, points, icon: 'sparkles' });
-          showToast(`Справу "${title}" створено!`, 'success');
+          if (editId) {
+            await api.updateDutyTask(editId, { title, points });
+            showToast(`Справу "${title}" оновлено!`, 'success');
+          } else {
+            await api.createDutyTask({ title, points, icon: 'sparkles' });
+            showToast(`Справу "${title}" створено!`, 'success');
+          }
         } catch (e) {
-          showToast('Помилка додавання', 'error');
+          showToast('Помилка збереження', 'error');
         }
         taskModal.classList.add('hidden');
         renderPoints(container, currentUser);

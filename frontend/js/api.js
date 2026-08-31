@@ -158,6 +158,13 @@ export const api = {
             body: JSON.stringify(data)
         }).then(res => res.json()),
 
+    updateDutyTask: (taskId, data) => 
+        fetch(`${API_BASE_URL}/points/tasks/${taskId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(res => res.json()),
+
     deleteDutyTask: (taskId) => 
         fetch(`${API_BASE_URL}/points/tasks/${taskId}`, { method: 'DELETE' }).then(res => res.json()),
 
