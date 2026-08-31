@@ -145,11 +145,20 @@ export async function renderMenu(container) {
     };
 
     document.getElementById('btn-sync-shop').onclick = async () => {
-      const res = await api.generateShoppingFromMenu();
-      if (res.message.includes("порожнє")) {
-        showToast(res.message, 'warning');
-      } else {
-        showToast(res.message, 'success');
+      try {
+        showToast('Формуємо список покупок...', 'info');
+        const res = await api.generateShoppingFromMenu();
+        
+        if (res.status === 'warning') {
+          showToast(res.message, 'warning');
+        } else if (res.status === 'info') {
+          showToast(res.message, 'info');
+        } else {
+          showToast(res.message || 'Інгредієнти додано у покупки! 🛒', 'success');
+        }
+      } catch (err) {
+        console.error("Помилка генерації покупок:", err);
+        showToast('Не вдалося згенерувати список покупок', 'error');
       }
     };
 
