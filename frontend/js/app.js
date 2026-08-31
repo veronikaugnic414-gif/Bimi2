@@ -1,3 +1,12 @@
+import { renderDashboard } from './views/dashboard.js';
+import { renderCalendar } from './views/calendar.js';
+import { renderMenu } from './views/menu.js';
+import { renderRecipes } from './views/recipes.js';
+import { renderFridge } from './views/fridge.js';
+import { renderShopping } from './views/shopping.js';
+import { renderFinance } from './views/finance.js';
+import { renderPoints } from './views/points.js';
+
 let currentUser = { id: 1, name: "Вероніка" };
 let currentActiveTab = 'dashboard';
 
@@ -11,7 +20,7 @@ window.selectUser = function(id, name) {
   if (modal) modal.classList.add("hidden");
 
   updateUserUI();
-  loadCurrentTab('dashboard');
+  loadCurrentTab(currentActiveTab);
 };
 
 window.openUserModal = function() {
@@ -41,7 +50,6 @@ function initTheme() {
     const isDark = document.body.classList.contains("dark-mode");
     localStorage.setItem("household_theme", isDark ? "dark" : "light");
     updateIcons();
-    // Перемальовуємо активну вкладку, щоб оновити кольори графіка під нову тему
     loadCurrentTab(currentActiveTab);
   };
 
@@ -121,33 +129,39 @@ async function loadCurrentTab(tab) {
   if (window.lucide) window.lucide.createIcons();
 
   try {
-    if (tab === 'dashboard') {
-      const module = await import('./views/dashboard.js');
-      await module.renderDashboard(container, currentUser);
-    } else if (tab === 'calendar') {
-      const module = await import('./views/calendar.js');
-      await module.renderCalendar(container);
-    } else if (tab === 'menu') {
-      const module = await import('./views/menu.js');
-      await module.renderMenu(container);
-    } else if (tab === 'recipes') {
-      const module = await import('./views/recipes.js');
-      await module.renderRecipes(container);
-    } else if (tab === 'fridge') {
-      const module = await import('./views/fridge.js');
-      await module.renderFridge(container);
-    } else if (tab === 'shopping') {
-      const module = await import('./views/shopping.js');
-      await module.renderShopping(container);
-    } else if (tab === 'finance') {
-      const module = await import('./views/finance.js');
-      await module.renderFinance(container, currentUser);
+    switch (tab) {
+      case 'dashboard':
+        await renderDashboard(container, currentUser);
+        break;
+      case 'calendar':
+        await renderCalendar(container);
+        break;
+      case 'menu':
+        await renderMenu(container);
+        break;
+      case 'recipes':
+        await renderRecipes(container);
+        break;
+      case 'fridge':
+        await renderFridge(container);
+        break;
+      case 'shopping':
+        await renderShopping(container);
+        break;
+      case 'finance':
+        await renderFinance(container, currentUser);
+        break;
+      case 'points':
+        await renderPoints(container, currentUser);
+        break;
+      default:
+        await renderDashboard(container, currentUser);
     }
 
     if (window.lucide) window.lucide.createIcons();
 
   } catch (err) {
-    console.error(`Error loading tab ${tab}:`, err);
+    console.error(`Error rendering tab ${tab}:`, err);
     container.innerHTML = `
       <div class="glass-card p-6 text-center rounded-3xl space-y-2 border-rose-200">
         <p class="text-sm font-bold text-rose-500">Помилка завантаження розділу "${tab}"</p>
